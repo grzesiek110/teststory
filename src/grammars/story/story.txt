@@ -1,0 +1,11 @@
+Feature Witaj przygodo!
+
+Scenario Wyprawa do krainy parserów
+
+    Given Open webpage <strona_logowania>
+    And Wait for browser to show element <element>
+    And Set something
+
+
+    Then Click on element <element>  
+    And Compare text from element <element> to "Jakis tekst"

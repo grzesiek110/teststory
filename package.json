@@ -28,6 +28,9 @@
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js"
 	},
+	"dependencies": {
+		"antlr4": "4.7.2"
+	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.6",
