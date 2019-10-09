@@ -1,4 +1,4 @@
-grammar story;
+grammar Story;
 
 // Parser rules
 

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { createAst } from '../document-builder';
-import { StoryContentProvider } from './story-visitor';
+import { createAst } from './document-builder';
+import { StoreModelBuilder } from '../grammar/ast/model-builder';
+import { ParseTreeWalker, ParseTreeListener } from 'antlr4ts/tree';
 
 export function registerCompletionProviders(){
     let provider1 = vscode.languages.registerCompletionItemProvider('plaintext', {
@@ -51,10 +52,26 @@ export function registerCompletionProviders(){
 
                 console.log('parse');
 				const storyAst = createAst(document);
-				const completionItemsProvider = new StoryContentProvider(position.line, position.character);
-				const completionItems = storyAst.accept(completionItemsProvider);
-                console.log('items', completionItems);
+				const storyModelBuilder = new StoreModelBuilder();
+				ParseTreeWalker.DEFAULT.walk(storyModelBuilder as ParseTreeListener, storyAst);
 
+				const storyModel = storyModelBuilder.model;
+//				console.log('modelA', JSON.stringify(storyModel));
+
+				const lineSupport = storyModel.structure[position.line];
+				if (lineSupport){
+					console.log('Przygotowanie podpowiedzi');
+					return lineSupport.provideCompletionItems(position.character);
+				}
+				
+
+				//const completionItems = storyAst.accept(completionItemsProvider);
+                //console.log('items', completionItems);
+
+
+
+
+				
 				// get all text until the `position` and check if it reads `console.`
 				// and if so then complete if `log`, `warn`, and `error`
 				let linePrefix = document.lineAt(position).text.substr(0, position.character);

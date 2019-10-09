@@ -1,18 +1,18 @@
 import * as vscode from 'vscode';
 import * as antlr from 'antlr4ts';
-import { storyLexer } from '../grammar/storyLexer';
-import { storyParser, ModelContext } from '../grammar/storyParser';
+import { StoryLexer } from '../grammar/parser/StoryLexer';
+import { StoryParser, ModelContext } from '../grammar/parser/StoryParser';
 
 
 export function createAst(document: vscode.TextDocument): ModelContext{
     const documentText = document.getText();
 
     let inputStream = new antlr.ANTLRInputStream(documentText);
-    let lexer = new storyLexer(inputStream);
+    let lexer = new StoryLexer(inputStream);
     let tokenStream = new antlr.CommonTokenStream(lexer);
-    let parser = new storyParser(tokenStream);
-
+    let parser = new StoryParser(tokenStream);
     parser.buildParseTree = true;
+
     return parser.model();
 }
 
