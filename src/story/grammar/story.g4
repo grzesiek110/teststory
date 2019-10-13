@@ -9,13 +9,13 @@ model:
 ;
 
 feature:
-  WS? 'Feature' WS sectionName
+  WS? FEATURE WS sectionName
   emptyLine*
   scenario*
 ;
 
 scenario:
-  WS? 'Scenario' WS sectionName
+  WS? SCENARIO WS sectionName
   emptyLine*
 
   given*
@@ -29,25 +29,25 @@ sectionName:
 
 
 given: 
-  WS? 'Given' WS expression
+  WS? GIVEN WS expression
   emptyLine*
   and*
 ;
 
 when: 
-  WS? 'When' WS expression
+  WS? WHEN WS expression
   emptyLine*
   and*
 ;
 
 then:
-  WS? 'Then' WS expression
+  WS? THEN WS expression
   emptyLine*
   and*
 ;  
 
 and:
-  WS? 'And' WS expression
+  WS? AND WS expression
   emptyLine*
 ;
 
@@ -89,6 +89,15 @@ fragment ENG_LETTER:
 
 fragment SPECIAL_LETTER:
   [!?;,._];
+
+FEATURE: 'Feature:' ;
+SCENARIO_OUTLINE: 'Scenario Outline:';
+SCENARIO: 'Scenario:';
+EXAMPLES: 'Examples:';
+GIVEN: 'Given';
+WHEN: 'When';
+THEN: 'Then';
+AND: 'And';
 
 SINGLE_QUOTE: '\'';
 DOUBLE_QUOTE: '"'; 

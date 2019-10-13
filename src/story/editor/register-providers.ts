@@ -1,94 +1,22 @@
 import * as vscode from 'vscode';
-import { createAst } from './document-builder';
-import { StoreModelBuilder } from '../grammar/ast/model-builder';
-import { ParseTreeWalker, ParseTreeListener } from 'antlr4ts/tree';
+import { parseStoryModel } from '../grammar/ast/builder';
+import { StoryCompletionItemsProvider } from './completions/completion-provider';
+import { RulesService } from '../../rules/rules';
+
 
 export function registerCompletionProviders(){
-    let provider1 = vscode.languages.registerCompletionItemProvider('plaintext', {
+    const provider = vscode.languages.registerCompletionItemProvider('plaintext', {
 
 		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
+			
+			console.log(`proposals - ${position.line}:${position.character}`);
+			const storyModel = parseStoryModel(document);
+			console.log(storyModel.debugString());
 
-			// a simple completion item which inserts `Hello World!`
-			const simpleCompletion = new vscode.CompletionItem('Hello World!');
-
-			// a completion item that inserts its text as snippet,
-			// the `insertText`-property is a `SnippetString` which will be
-			// honored by the editor.
-			const snippetCompletion = new vscode.CompletionItem('Good part of the day');
-			 snippetCompletion.insertText = new vscode.SnippetString('Good ${1|morning,afternoon,evening|}. It is ${1}, right?');
-			snippetCompletion.documentation = new vscode.MarkdownString("Inserts a snippet that lets you select the _appropriate_ part of the day for your greeting.");
-
-			// a completion item that can be accepted by a commit character,
-			// the `commitCharacters`-property is set which means that the completion will
-			// be inserted and then the character will be typed.
-			const commitCharacterCompletion = new vscode.CompletionItem('console');
-			commitCharacterCompletion.commitCharacters = ['.'];
-			commitCharacterCompletion.documentation = new vscode.MarkdownString('Press `.` to get `console.`');
-
-			// a completion item that retriggers IntelliSense when being accepted,
-			// the `command`-property is set which the editor will execute after 
-			// completion has been inserted. Also, the `insertText` is set so that 
-			// a space is inserted after `new`
-			const commandCompletion = new vscode.CompletionItem('new');
-			commandCompletion.kind = vscode.CompletionItemKind.Keyword;
-			commandCompletion.insertText = 'new ';
-			commandCompletion.command = { command: 'editor.action.triggerSuggest', title: 'Re-trigger completions...' };
-
-			// return all completion items as array
-			return [
-				simpleCompletion,
-				snippetCompletion,
-				commitCharacterCompletion,
-				commandCompletion
-			];
+			const completionProvider = new StoryCompletionItemsProvider(storyModel, new RulesService());
+			return completionProvider.provideCompletionItems(document, position);
 		}
 	});
 
-	const provider2 = vscode.languages.registerCompletionItemProvider(
-		'plaintext',
-		{
-			provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-
-
-                console.log('parse');
-				const storyAst = createAst(document);
-				const storyModelBuilder = new StoreModelBuilder();
-				ParseTreeWalker.DEFAULT.walk(storyModelBuilder as ParseTreeListener, storyAst);
-
-				const storyModel = storyModelBuilder.model;
-//				console.log('modelA', JSON.stringify(storyModel));
-
-				const lineSupport = storyModel.structure[position.line];
-				if (lineSupport){
-					console.log('Przygotowanie podpowiedzi');
-					return lineSupport.provideCompletionItems(position.character);
-				}
-				
-
-				//const completionItems = storyAst.accept(completionItemsProvider);
-                //console.log('items', completionItems);
-
-
-
-
-				
-				// get all text until the `position` and check if it reads `console.`
-				// and if so then complete if `log`, `warn`, and `error`
-				let linePrefix = document.lineAt(position).text.substr(0, position.character);
-				if (!linePrefix.endsWith('console.')) {
-					return undefined;
-				}
-
-				return [
-					new vscode.CompletionItem('log', vscode.CompletionItemKind.Method),
-					new vscode.CompletionItem('warn', vscode.CompletionItemKind.Method),
-					new vscode.CompletionItem('error', vscode.CompletionItemKind.Method),
-				];
-			}
-		},
-		'.' // triggered whenever a '.' is being typed
-    );
-    
-    return [provider1, provider2];
-
+    return [provider];
 }
