@@ -2,53 +2,55 @@ grammar Story;
 
 // Parser rules
 
-model:
-    emptyLine*
-    feature
-    emptyLine*
-;
+model: 
+  line*;
+
+line: 
+  emptyLine | commandLine | unknownLine;
+
+emptyLine:
+  WS? EOL;
+
+commandLine:
+  WS? commmand (EOL | EOF);
+
+unknownLine:
+  WS? ~(FEATURE | SCENARIO | SCENARIO_OUTLINE | EXAMPLES | GIVEN | WHEN | THEN | AND) ~EOL*;
+
+commmand: 
+  feature | 
+  scenario |
+  given |
+  when |
+  then |
+  and;
 
 feature:
-  WS? FEATURE WS sectionName
-  emptyLine*
-  scenario*
-;
+  FEATURE WS sectionName;
 
 scenario:
-  WS? SCENARIO WS sectionName
-  emptyLine*
+  SCENARIO WS sectionName;
 
-  given*
-  when*
-  then*
-;
+scenarioOutline:
+  SCENARIO_OUTLINE WS sectionName;
+
+examples:
+  EXAMPLES WS ;
+
+given: 
+  GIVEN WS expression;
+
+when: 
+  WHEN WS expression;
+
+then:
+  THEN WS expression;  
+
+and:
+  AND WS expression;
 
 sectionName:
   ~EOL*
-;
-
-
-given: 
-  WS? GIVEN WS expression
-  emptyLine*
-  and*
-;
-
-when: 
-  WS? WHEN WS expression
-  emptyLine*
-  and*
-;
-
-then:
-  WS? THEN WS expression
-  emptyLine*
-  and*
-;  
-
-and:
-  WS? AND WS expression
-  emptyLine*
 ;
 
 expression:
@@ -60,24 +62,21 @@ expressionText:
 ;
 
 variableRef:
-  '<' WS? variableName WS? '>';
+  REF_OPEN WS? variableName WS? REF_CLOSE;
 
 variableName:
   VARIABLE_NAME;
 
 staticValueSingle:
-  '\'' staticValue '\'';
+  SINGLE_QUOTE staticValue SINGLE_QUOTE;
 
 staticValueDouble:
-  '"' staticValue '"';
+  DOUBLE_QUOTE staticValue DOUBLE_QUOTE;
 
 staticValue:
   ~(SINGLE_QUOTE | DOUBLE_QUOTE)+
 ;
 
-emptyLine:
-  WS? EOL
-;
 
 // Lexer rules
 
@@ -99,6 +98,8 @@ WHEN: 'When';
 THEN: 'Then';
 AND: 'And';
 
+REF_OPEN: '<';
+REF_CLOSE: '>';
 SINGLE_QUOTE: '\'';
 DOUBLE_QUOTE: '"'; 
 
