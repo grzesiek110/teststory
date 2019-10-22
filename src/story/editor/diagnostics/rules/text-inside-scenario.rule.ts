@@ -1,22 +1,11 @@
-import { Diagnostic, Range, Position, DiagnosticSeverity, DiagnosticRelatedInformation, Location, TextDocument } from 'vscode';
-import { StoryModel, StoryUnknown, StoryScenario, StructureElementType, RuleType } from '../../../grammar/ast';
+import { Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Position, Range, TextDocument } from 'vscode';
+import { StoryModel, StoryScenario, StoryUnknown } from '../../../grammar/ast';
+import { DiagnosticsProviderRule } from '../diagnostics.provider';
 
 
-export class ScenariosStructureRule {
+export class TextInsideScenariosRule implements DiagnosticsProviderRule{
 
-    getDiagnostics(document: TextDocument, model: StoryModel): Diagnostic[]{
-        const diagnostics: Diagnostic[] = [];
-        this.checkScenarios(document, model, diagnostics);
-
-        return diagnostics;
-    }
-
-    private checkScenarios(document: TextDocument, model: StoryModel, diagnostics: Diagnostic[]) {
-        this.markUnknowLinesAsErrorInsideScenarios(model, document, diagnostics);
-        this.checkRulesSequence(document, diagnostics, model);
-    }
-
-    private markUnknowLinesAsErrorInsideScenarios(model: StoryModel, document: TextDocument, diagnostics: Diagnostic[]) {
+    createDiagnostics(document: TextDocument, diagnostics: Diagnostic[], model: StoryModel) {
         const scenarios = model.getScenarios();
         if (scenarios.length) {
             const firstScenario = scenarios[0];
@@ -49,27 +38,5 @@ export class ScenariosStructureRule {
             ]
         });
     }
-
-    private checkRulesSequence(document: TextDocument, diagnostics: Diagnostic[], model: StoryModel) {
-        model.getScenarios().forEach(scenario => this.checkSequenceOfRules(document, diagnostics, scenario));
-    }
-    
-    private checkSequenceOfRules(document: TextDocument, diagnostics: Diagnostic[], scenario: StoryScenario): void {
-        // const rules = scenario.getRules();
-
-        // for (let rule of rules){
-        //     if (this.ruleTypeInNotAllowed()){
-
-        //     }
-        // }
-
-    }
-    private ruleTypeInNotAllowed(ruleType: RuleType) {
-        // switch(lastRuleType){
-        //     case ''
-        // }
-    }
-
-
 
 }

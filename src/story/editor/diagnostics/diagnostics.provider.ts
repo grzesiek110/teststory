@@ -1,7 +1,18 @@
-import * as vscode from 'vscode';
 import * as path from 'path';
+import * as vscode from 'vscode';
+import { StoryModel } from '../../grammar/ast';
 import { parseStoryModel } from '../../grammar/ast/builder';
-import { ScenariosStructureRule } from './rules/scenarios-structure.rule';
+import { ScenarioSequenceRule } from './rules/scenario-sequence.rule';
+import { TextInsideScenariosRule } from './rules/text-inside-scenario.rule';
+
+export interface DiagnosticsProviderRule {
+	createDiagnostics(document: vscode.TextDocument, diagnostics: vscode.Diagnostic[], model: StoryModel);
+}
+
+const diagnosticsRules: DiagnosticsProviderRule[] = [
+	new TextInsideScenariosRule(),
+	new ScenarioSequenceRule()
+]; 
 
 export function createDiagnosticsProvider(context: vscode.ExtensionContext) {
 	const collection = vscode.languages.createDiagnosticCollection('plaintext');
@@ -20,22 +31,12 @@ function updateDiagnostics(document: vscode.TextDocument, collection: vscode.Dia
 
 	if (document && path.extname(document.uri.fsPath) === '.story') {
 
+		const diagnostics = [];
 		const storyModel = parseStoryModel(document);
-		const structureRule = new ScenariosStructureRule();
-		const diagnostics = structureRule.getDiagnostics(document, storyModel);
+
+		diagnosticsRules.forEach(rule => rule.createDiagnostics(document, diagnostics, storyModel));
 		collection.set(document.uri, diagnostics);
 
-
-		// collection.set(document.uri, [{
-		// 	code: '',
-		// 	message: 'cannot assign twice to immutable variable `x`',
-		// 	range: new vscode.Range(new vscode.Position(3, 4), new vscode.Position(3, 10)),
-		// 	severity: vscode.DiagnosticSeverity.Error,
-		// 	source: '',
-		// 	relatedInformation: [
-		// 		new vscode.DiagnosticRelatedInformation(new vscode.Location(document.uri, new vscode.Range(new vscode.Position(1, 8), new vscode.Position(1, 9))), 'first assignment to `x`')
-		// 	]
-		// }])
 	} else {
 		collection.clear();
 	}
