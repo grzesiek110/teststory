@@ -9,7 +9,7 @@ export class StoryScenario implements StorySection, StructureElement {
     private endLine: number;
     private rules: StoryRule[] = [];
 
-    constructor(private ctx: ScenarioContext){}
+    constructor(public ctx: ScenarioContext){}
 
     getType(): StructureElementType {
         return 'SCENARIO';

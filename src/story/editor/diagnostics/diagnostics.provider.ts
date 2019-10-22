@@ -1,8 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { parseStoryModel } from '../../grammar/ast/builder';
+import { ScenariosStructureRule } from './rules/scenarios-structure.rule';
 
-function createDiagnosticsProvider(context: vscode.ExtensionContext) {
-	const collection = vscode.languages.createDiagnosticCollection('test');
+export function createDiagnosticsProvider(context: vscode.ExtensionContext) {
+	const collection = vscode.languages.createDiagnosticCollection('plaintext');
 	if (vscode.window.activeTextEditor) {
 		updateDiagnostics(vscode.window.activeTextEditor.document, collection);
 	}
@@ -14,7 +16,14 @@ function createDiagnosticsProvider(context: vscode.ExtensionContext) {
 }
 
 function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
+	console.log('update diagnostics ' + document.uri.fsPath);
+
 	if (document && path.extname(document.uri.fsPath) === '.story') {
+
+		const storyModel = parseStoryModel(document);
+		const structureRule = new ScenariosStructureRule();
+		const diagnostics = structureRule.getDiagnostics(document, storyModel);
+		collection.set(document.uri, diagnostics);
 
 
 		// collection.set(document.uri, [{

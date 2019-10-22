@@ -19,7 +19,7 @@ export type RuleType =
 export class StoryRule implements StructureElement{
     expression: StoryExpression;
 
-    constructor(private kind: RuleType, public ctx: Readonly<RuleContext>){}
+    constructor(public kind: RuleType, public ctx: Readonly<RuleContext>){}
 
     getType(): StructureElementType {
         return 'RULE';

@@ -72,13 +72,13 @@ export class StoryModel {
 
     isEmpty(onlyStoryElements = true) {
         return Object.keys(this.structure)
-                     .filter(key => this.filterStoryElements(onlyStoryElements, key))
+                     .filter(key => onlyStoryElements ? this.isStoryElement(Number(key)) : true)
                      .length === 0;
     }
 
     getUsedLines(onlyStoryElements = true) {
         return Object.keys(this.structure)
-                     .filter(key => this.filterStoryElements(onlyStoryElements, key))
+                     .filter(key => onlyStoryElements ? this.isStoryElement(Number(key)) : true)
                      .sort((a, b) => Number(a) - Number(b))
                      .map(key => Number(key));
     }
@@ -87,12 +87,29 @@ export class StoryModel {
         return this.structure[line];
     }
 
+    getElements<T extends StructureElement>(startLine: number, endLine?: number, onlyStoryElements = true, type?: StructureElementType): T[] {
+        const elements = this.getUsedLines(onlyStoryElements)
+                 .filter(line => line >= startLine)
+                 .filter(line => endLine ? line <= endLine : true)
+                 .filter(line => type? this.isElementCorrectType(line, type) : true)
+                 .map(line => this.getElement(line));
+        return elements as T[];
+    }
+
     getNearestElementAbove<T extends StructureElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
         return this.findElementByTypeAndDirection('ABOVE', onlyStoryElements, queryLine, type);
     }
 
     getNearestElementBelow<T extends StructureElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
         return this.findElementByTypeAndDirection('BELOW', onlyStoryElements, queryLine, type);
+    }
+
+    isStoryElement(line: number) {
+        return this.structure[line].isStoryElement();
+    }    
+
+    isElementCorrectType(line: number, type: StructureElementType): unknown {
+        return this.structure[line].getType() === type;
     }
 
     debugString(){
@@ -107,10 +124,6 @@ export class StoryModel {
 
     private addStructureElement(line: number, element: StructureElement){
         this.structure[line] = element;
-    }
-
-    private filterStoryElements(onlyStoryElements: boolean, key: string): unknown {
-        return onlyStoryElements ? this.structure[key].isStoryElement() : true;
     }
 
     private findElementByTypeAndDirection<T extends StructureElement>(direction: Direction, onlyStoryElements: boolean, queryLine: number, type?: StructureElementType){
