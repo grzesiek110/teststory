@@ -1,31 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 
-import { parseStoryModel } from '../grammar/ast/builder';
-import { StoryCompletionItemsProvider } from './completions/completion-provider';
-import { RulesService } from '../../rules/rules';
-
-
-export function registerProviders(context: vscode.ExtensionContext){
-    const completionProvider = createCompletionItemProvider();
-	/* const diagnosticsProvider = */ createDiagnosticsProvider(context);
-    return [
-		completionProvider
-	];
-}
-
-function createCompletionItemProvider() {
-	return vscode.languages.registerCompletionItemProvider('plaintext', {
-		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
-			console.log(`proposals - ${position.line}:${position.character}`);
-			const storyModel = parseStoryModel(document);
-			console.log(storyModel.debugString());
-			const completionProvider = new StoryCompletionItemsProvider(storyModel, new RulesService());
-			return completionProvider.provideCompletionItems(document, position);
-		}
-	});
-}
-
 function createDiagnosticsProvider(context: vscode.ExtensionContext) {
 	const collection = vscode.languages.createDiagnosticCollection('test');
 	if (vscode.window.activeTextEditor) {
@@ -40,8 +15,6 @@ function createDiagnosticsProvider(context: vscode.ExtensionContext) {
 
 function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
 	if (document && path.extname(document.uri.fsPath) === '.story') {
-
-		
 
 
 		// collection.set(document.uri, [{

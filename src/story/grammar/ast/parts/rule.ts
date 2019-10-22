@@ -53,4 +53,8 @@ export class StoryRule implements StructureElement{
         this.expression = expression;
     }
 
+    isStoryElement(): boolean {
+        return true;
+    }
+
 }

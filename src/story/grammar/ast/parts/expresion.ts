@@ -56,5 +56,9 @@ export class StoryExpression implements StructureElement {
         });
     }
 
+    isStoryElement(): boolean {
+        return true;
+    }
+
 }
 

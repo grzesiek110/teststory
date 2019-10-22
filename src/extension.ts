@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { registerCompletionProviders } from './story/editor/register-providers';
+import { registerProviders } from './story/editor/register-providers';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const providers = registerCompletionProviders();
+	const providers = registerProviders(context);
 	context.subscriptions.push(...providers);
 }
 

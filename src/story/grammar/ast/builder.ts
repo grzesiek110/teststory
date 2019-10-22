@@ -4,9 +4,9 @@ import { ParseTreeListener, ParseTreeWalker } from 'antlr4ts/tree';
 
 import { StoryLexer } from '../parser/StoryLexer';
 import { StoryListener } from '../parser/StoryListener';
-import { AndContext, ExpressionContext, ExpressionTextContext, FeatureContext, GivenContext, ModelContext, ScenarioContext, SectionNameContext, StaticValueContext, StoryParser, ThenContext, VariableNameContext, WhenContext } from '../parser/StoryParser';
+import { AndContext, ExpressionContext, ExpressionTextContext, FeatureContext, GivenContext, ModelContext, ScenarioContext, SectionNameContext, StaticValueContext, StoryParser, ThenContext, VariableNameContext, WhenContext, UnknownLineContext } from '../parser/StoryParser';
 import { StorySection, StoryModel } from './model';
-import { StoryExpression, StoryFeature, StoryRule, StoryScenario } from './parts';
+import { StoryExpression, StoryFeature, StoryRule, StoryScenario, StoryUnknown } from './parts';
 
 
 export function parseStoryModel(document: vscode.TextDocument): StoryModel {
@@ -16,7 +16,7 @@ export function parseStoryModel(document: vscode.TextDocument): StoryModel {
     return buildStoryModel(psrserModel);
 }
 
-function parseDocument(documentText: string) {
+export function parseDocument(documentText: string) {
 
     const inputStream = new antlr.ANTLRInputStream(documentText);
     const lexer = new StoryLexer(inputStream);
@@ -46,9 +46,14 @@ class Builder implements StoryListener {
         this.model = new StoryModel();
     }
 
+    enterUnknownLine(ctx: UnknownLineContext){
+        const unknown = new StoryUnknown(ctx);
+        this.model.addUnknown(unknown);
+    }
+
     enterFeature(ctx: FeatureContext){
         const feature = new StoryFeature(ctx);
-        this.model.addStructureElement(ctx.start.line, feature);
+        this.model.setFeature(feature);
         this.activeSection = feature;
     }
 
@@ -61,13 +66,11 @@ class Builder implements StoryListener {
     }
 
     enterScenario(ctx: ScenarioContext){
-        this.activeScenario = new StoryScenario(ctx);
-        this.activeSection = this.activeScenario;
-    }
+        const scenario = new StoryScenario(ctx);
+        this.model.addScenario(scenario);
 
-    exitScenario(ctx: ScenarioContext){
-        this.model.addStructureElement(ctx.start.line, this.activeScenario);
-        this.activeScenario = undefined;
+        this.activeScenario = scenario;
+        this.activeSection = scenario;
     }
 
     enterGiven(ctx: GivenContext){
@@ -104,11 +107,23 @@ class Builder implements StoryListener {
     }
 
     exitExpression(ctx: ExpressionContext){
+        this.extendActiveScenarioToLine(ctx.start.line);
+
         this.activeRule.setExpression(this.activeExpression);
         this.activeExpression = undefined;
 
-        this.model.addStructureElement(ctx.start.line, this.activeRule);
+        this.model.addRule(this.activeRule);
         this.activeRule = undefined;
+    }
+
+    exitUnknownLine(ctx: UnknownLineContext){
+        this.extendActiveScenarioToLine(ctx.start.line);
+    }
+
+    private extendActiveScenarioToLine(line: number) {
+        if (this.activeScenario) {
+            this.activeScenario.setEndLine(line);
+        }
     }
 }
 

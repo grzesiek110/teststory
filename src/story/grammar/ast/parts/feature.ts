@@ -22,4 +22,9 @@ export class StoryFeature implements StorySection, StructureElement {
         this.name = name;
     }
 
+    isStoryElement(): boolean {
+        return true;
+    }
+
+
 }
