@@ -20,7 +20,7 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"grammar-story": "antlr4ts -o src/story/grammar/parser -visitor ./src/story/grammar/Story.g4"
+		"grammar-story": "antlr4ts -o src/domains/story/grammar/parser -visitor ./src/domains/story/grammar/Story.g4"
 	},
 	"dependencies": {
 		"antlr4": "4.7.2",

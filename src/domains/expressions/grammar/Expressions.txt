@@ -1,0 +1,27 @@
+GIVEN:
+    
+    # Otwiera wybraną stronę w przeglądarce
+    Open webpage "value"
+
+    # Czeka kilka sekund dając przeglądarce czas na wczytanie wartości
+    Wait for "value" seconds'
+
+WHEN:
+
+    # Klika w wybrany element
+    I want click on element <variable>
+
+    # Klika w wybrany wiersz tabeli. Wiersz podajemy na zasadzie:
+    # <nazwa-tabeli:numer-wiersza>
+    I want click on table row <table>
+
+    I want click on table cell <table>
+
+THEN:
+
+    # Sprawdza czy tekst w wybranym elemencie ma wymaganą wartość
+    <variable> text should equal "value"
+
+    # Czeka aż przeglądarka załaduje stronę o podanym adresie URL
+    Browser should load page "value"
+

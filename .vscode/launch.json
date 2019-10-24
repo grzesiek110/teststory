@@ -36,8 +36,8 @@
 			"name": "Debug 'Story' grammar",
 			"type": "antlr-debug",
 			"request": "launch",
-			"input": "src/story/grammar/Story.txt",
-			"grammar": "src/story/grammar/Story.g4",
+			"input": "src/domains/story/grammar/Story.txt",
+			"grammar": "src/domains/story/grammar/Story.g4",
 			"startRule": "model",
 			"printParseTree": true,
 			"visualParseTree": true

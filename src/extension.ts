@@ -1,10 +1,12 @@
 import * as vscode from 'vscode';
-import { registerProviders } from './story/editor/register-providers';
+
+import { createDiagnosticsProvider } from './domains/story/editor/diagnostics/diagnostics.provider';
+import { createCompletionItemProvider } from './domains/story/editor/completions/completions.provider';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const providers = registerProviders(context);
-	context.subscriptions.push(...providers);
+	createDiagnosticsProvider(context);	
+	context.subscriptions.push(createCompletionItemProvider());
 }
 
 // this method is called when your extension is deactivated
