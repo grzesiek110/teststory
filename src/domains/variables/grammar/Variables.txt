@@ -1,0 +1,11 @@
+
+# Pobranie listy klientów
+loadCustomerButton : Element
+
+# Kliknięcie pokazuje sekcję danych klienta
+# na jakimś wymyślonym ekranie
+showCustomerInfoSection : Element
+
+# Zatwierdza formularz z danymi klienta
+submitButton : Element
+
