@@ -92,7 +92,7 @@ expression:
 ;
 
 expressionText:
-  ~(EOL | '<' | SINGLE_QUOTE | DOUBLE_QUOTE | COMMENT)+
+  ~(EOL | REF_OPEN | SINGLE_QUOTE | DOUBLE_QUOTE | COMMENT)+
 ;
 
 variableRef:
@@ -106,14 +106,13 @@ wrongVariableName:
   ~(REF_CLOSE | EOL | COMMENT)*;
 
 staticValueSingle:
-  SINGLE_QUOTE staticValue SINGLE_QUOTE;
+  SINGLE_QUOTE staticValue SINGLE_QUOTE?;
 
 staticValueDouble:
-  DOUBLE_QUOTE staticValue DOUBLE_QUOTE;
+  DOUBLE_QUOTE staticValue DOUBLE_QUOTE?;
 
 staticValue:
-  ~(SINGLE_QUOTE | DOUBLE_QUOTE)+
-;
+  ~(EOL | SINGLE_QUOTE | DOUBLE_QUOTE | COMMENT)*;
 
 
 // Lexer rules
@@ -128,7 +127,7 @@ fragment SPECIAL_CHARACTER:
   [!?;:,._];
 
 COMMENT:
-  '#' ~[\r\n]+;
+  '#' ~[\r\n]*;
 
 FEATURE: 'Feature:' ;
 WRONG_FEATURE: 

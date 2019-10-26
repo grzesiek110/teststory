@@ -4,6 +4,7 @@ import { TerminalNode } from "antlr4ts/tree";
 import { StoryRule } from "../../../grammar/model/elements";
 import { ExpressionCompletionItems } from "./expression-completion-items";
 import { CompletionItemsProvider } from "../completions.model";
+import { ParserRuleContext } from "antlr4ts";
 
 
 export class RuleCompletionItems implements CompletionItemsProvider {
@@ -30,12 +31,12 @@ export class RuleCompletionItems implements CompletionItemsProvider {
         
     }
 
-    private atKeywordToken(position: number, node: TerminalNode) {
-        return position >= node.symbol.charPositionInLine && 
-               position <= (node.symbol.charPositionInLine + node.text.length);
+    private atKeywordToken(position: number, node: ParserRuleContext) {
+        return position >= node.start.charPositionInLine && 
+               position <= (node.stop.charPositionInLine + node.stop.text.length);
     }
 
-    private afterKeywordToken(position: number, node: TerminalNode) {
-        return position > (node.symbol.charPositionInLine + node.text.length);
+    private afterKeywordToken(position: number, node: ParserRuleContext) {
+        return position > (node.stop.charPositionInLine + node.stop.text.length);
     }
 }

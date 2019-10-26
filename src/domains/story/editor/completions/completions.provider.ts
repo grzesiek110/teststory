@@ -35,7 +35,7 @@ export class StoryCompletionItemsProvider implements CompletionItemsProvider {
             return [];
         }
 
-        const lineElement = this.model.getElement[lineIndex];
+        const lineElement = this.model.getElement(lineIndex);
         if (lineElement){
             const adapter = this.getCompletionProviderAdapter(lineElement);
             return adapter.provideCompletionItems(document, position);

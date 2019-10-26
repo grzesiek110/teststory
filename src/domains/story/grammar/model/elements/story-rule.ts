@@ -2,8 +2,9 @@ import { TerminalNode } from 'antlr4ts/tree';
 
 import { StructureElement, StructureElementType } from './story';
 import { StoryExpression } from './story-expresion';
-import { GivenContext, WhenContext, ThenContext, AndContext } from '../../parser/StoryParser';
+import { GivenContext, WhenContext, ThenContext, AndContext, GivenKeywordContext, StoryParser } from '../../parser/StoryParser';
 import { StoryLexer } from '../../parser/StoryLexer';
+import { ParserRuleContext } from 'antlr4ts';
 
 export type RuleContext = 
     GivenContext | 
@@ -34,19 +35,20 @@ export class StoryRule implements StructureElement{
         return `${this.kind} ${this.expression.debugString()}`;
     }                
 
-    getKeywordToken(): TerminalNode {
+    getKeywordToken(): ParserRuleContext {
+
         switch(this.kind){
             case 'GIVEN':
-                return this.ctx.getToken(StoryLexer.GIVEN, 0);
+                return (<GivenContext>this.ctx).givenKeyword();
 
             case 'WHEN':
-                return this.ctx.getToken(StoryLexer.WHEN, 0);
+                return (<WhenContext>this.ctx).whenKeyword();
 
             case 'THEN':
-                return this.ctx.getToken(StoryLexer.THEN, 0);
+                return (<ThenContext>this.ctx).thenKeyword();
 
             case 'AND':
-                return this.ctx.getToken(StoryLexer.AND, 0);            
+                return (<AndContext>this.ctx).andKeyword();            
         }
     }
 

@@ -13,5 +13,8 @@ Scenario Wyprawa do krainy parserów #ko
     and tomorrow
 
     Then Click on element <element d <fg #komentarz 23
-    #And Compare text from element <element> to "Jakis tekst"
+    And Compare text from element <element> to "Jakis tekst
     #then error #komentarz
+
+    When Open webpage " #
+    When Open webpage <>

@@ -56,26 +56,11 @@
         "name": "comment"
       },
       "variable-reference": {
-        "begin": "\\<",
-        "end": "\\>",
-        "beginCaptures": {
-          "0": { "name": "meta.brace.square.open" }
-        },
-        "endCaptures": {
-          "0": { "name": "meta.brace.square.close" }
-        },
-        "name": "variable",
-        "patterns": []
+        "match": "<[^>]*>?",
+        "name": "variable"
       },
       "constant": {
-        "begin": "\\\"",
-        "end": "\\\"",
-        "beginCaptures": {
-          "0": { "name": "meta.brace.square.open" }
-        },
-        "endCaptures": {
-          "0": { "name": "meta.brace.square.close" }
-        },
+        "match": "\"[^\"]*\"?",
         "name": "entity.name.function",
         "patterns": []
       }      
