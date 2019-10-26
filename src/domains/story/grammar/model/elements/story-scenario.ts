@@ -1,10 +1,10 @@
 
-import { StorySection, StructureElement, StructureElementType } from './story';
+import { StorySection, StoryLineElement, StructureElementType } from './story';
 import { ScenarioContext } from '../../parser/StoryParser';
 import { StoryRule } from './story-rule';
 
 
-export class StoryScenario implements StorySection, StructureElement {
+export class StoryScenario implements StorySection, StoryLineElement {
     private name: string;
     private endLine: number;
     private rules: StoryRule[] = [];

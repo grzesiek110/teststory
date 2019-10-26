@@ -1,7 +1,7 @@
-import { StorySection, StructureElement, StructureElementType } from './story';
+import { StorySection, StoryLineElement, StructureElementType } from './story';
 import { FeatureContext } from '../../parser/StoryParser';
 
-export class StoryFeature implements StorySection, StructureElement {
+export class StoryFeature implements StorySection, StoryLineElement {
     name: string;
     
     constructor(public ctx: Readonly<FeatureContext>){}

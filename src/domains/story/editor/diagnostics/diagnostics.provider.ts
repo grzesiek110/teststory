@@ -5,6 +5,8 @@ import { parseStoryModel } from '../../grammar/model/builder';
 import { DiagnosticsProviderRule } from './diagnostics.model';
 import { ExpressionDiagnostics, ScenarioSequenceDiagnostics, UnknownLinesDiagnostics } from './adapters';
 import { KeywordSpellingDiagnostics } from './adapters/keyword-spelling-diagnostics';
+import { StoryLanguageSupport } from '../story.language-support';
+import { StoryModel } from '../../grammar/model';
 
 
 const diagnosticsRules: DiagnosticsProviderRule[] = [
@@ -14,30 +16,21 @@ const diagnosticsRules: DiagnosticsProviderRule[] = [
 	new KeywordSpellingDiagnostics()
 ]; 
 
-export function createDiagnosticsProvider(context: vscode.ExtensionContext) {
-	const collection = vscode.languages.createDiagnosticCollection("teststory-story");
-	vscode.workspace.onDidChangeTextDocument(event => textDocumentChange(event, collection));
+export function createDiagnosticsProvider(storyLanguageSupport: StoryLanguageSupport) {
+	const diagnostics = vscode.languages.createDiagnosticCollection("teststory-story");
 
-	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
-		if (editor) {
-			updateDiagnostics(editor.document, collection);
+	storyLanguageSupport.registerOnModelChange({
+		modelChanged(uri, model){
+			updateDiagnostics(uri, model, diagnostics);
 		}
-	}));
+	});
 }
 
-function textDocumentChange(event: vscode.TextDocumentChangeEvent, collection: vscode.DiagnosticCollection){
-	const document = event.document;
-	if (document && path.extname(document.uri.fsPath) === '.story'){
-		updateDiagnostics(document, collection);
-	}
-}
 
-function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
-	collection.delete(document.uri);
+function updateDiagnostics(uri: vscode.Uri, model: StoryModel, collection: vscode.DiagnosticCollection): void {
+	collection.delete(uri);
 
 	const diagnostics = [];
-	const storyModel = parseStoryModel(document);
-
-	diagnosticsRules.forEach(rule => rule.createDiagnostics(document, diagnostics, storyModel));
-	collection.set(document.uri, diagnostics);	
+	diagnosticsRules.forEach(rule => rule.createDiagnostics(uri, diagnostics, model));
+	collection.set(uri, diagnostics);	
 }

@@ -1,20 +1,20 @@
-import { Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Position, Range, TextDocument } from 'vscode';
+import { Diagnostic, DiagnosticRelatedInformation, DiagnosticSeverity, Location, Position, Range, Uri } from 'vscode';
 import { StoryModel, StoryScenario, StoryUnknown } from '../../../grammar/model';
 import { DiagnosticsProviderRule } from '../diagnostics.model';
 
 
 export class UnknownLinesDiagnostics implements DiagnosticsProviderRule{
 
-    createDiagnostics(document: TextDocument, diagnostics: Diagnostic[], model: StoryModel) {
+    createDiagnostics(uri: Uri, diagnostics: Diagnostic[], model: StoryModel) {
         const scenarios = model.getScenarios();
         if (scenarios.length) {
             const firstScenario = scenarios[0];
             const unknownLines = model.getElements<StoryUnknown>(firstScenario.getLine(), undefined, false, 'UNKNOWN');
-            unknownLines.forEach(unknown => this.errorUnknownNotAllowedInScenario(document, diagnostics, model, unknown));
+            unknownLines.forEach(unknown => this.errorUnknownNotAllowedInScenario(uri, diagnostics, model, unknown));
         }
     }
 
-    private errorUnknownNotAllowedInScenario(document: TextDocument, diagnostics: Diagnostic[], model: StoryModel, unknown: StoryUnknown) {
+    private errorUnknownNotAllowedInScenario(uri: Uri, diagnostics: Diagnostic[], model: StoryModel, unknown: StoryUnknown) {
         
         const line = unknown.ctx.start.line -1;
         const startIndex = unknown.ctx.start.charPositionInLine;
@@ -33,7 +33,7 @@ export class UnknownLinesDiagnostics implements DiagnosticsProviderRule{
             source: '',
             relatedInformation: [
                 new DiagnosticRelatedInformation(
-                    new Location(document.uri, new Range(
+                    new Location(uri, new Range(
                         new Position(scenarioLine, scenarioStartIndex), new Position(scenarioLine, scenarioEndIndex))), 'Scenario rule')
             ]
         });

@@ -1,6 +1,6 @@
 import { TerminalNode } from 'antlr4ts/tree';
 
-import { StructureElement, StructureElementType } from './story';
+import { StoryLineElement, StructureElementType } from './story';
 import { StoryExpression } from './story-expresion';
 import { GivenContext, WhenContext, ThenContext, AndContext, GivenKeywordContext, StoryParser } from '../../parser/StoryParser';
 import { StoryLexer } from '../../parser/StoryLexer';
@@ -18,7 +18,7 @@ export type RuleType =
     'THEN' | 
     'AND';
 
-export class StoryRule implements StructureElement{
+export class StoryRule implements StoryLineElement{
     expression: StoryExpression;
 
     constructor(public kind: RuleType, public ctx: Readonly<RuleContext>){}

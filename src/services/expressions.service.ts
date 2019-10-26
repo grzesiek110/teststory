@@ -4,6 +4,7 @@ type ExpressionType = 'GIVEN' | 'WHEN' | 'THEN';
 export interface RuleExpression {
     kind: ExpressionType;
     mask: string;
+    name: string;
     description: string;
 } 
 
@@ -11,12 +12,14 @@ export class RuleDefinition implements RuleExpression{
     kind: ExpressionType;
     mask: string;
     snippet: string;
+    name: string;
     description: string;
     
     constructor(rule: RuleExpression){
         this.kind = rule.kind;
         this.mask = rule.mask;
         this.snippet = RuleDefinition.createSnippet(rule.mask);
+        this.name = rule.name;
         this.description = rule.description;
     }
 
@@ -67,26 +70,31 @@ export class ExpressionsService {
             { 
                 kind: 'GIVEN', 
                 mask: 'Open webpage "value"', 
+                name: 'Open webpage',
                 description: 'Open webpage in browser and wait for page refresh' 
             },
             { 
                 kind: 'GIVEN', 
                 mask: 'Wait for "value" seconds',
+                name: 'Wait few seconds',
                 description: 'Wait for number of seconds. Minimum is 1 second, maximum is 59 seconds'
             },
             { 
                 kind: 'WHEN', 
                 mask: 'I want click on element <variable>',
+                name: 'Click on element',
                 description: 'Try to find elemement on page and click on it' 
             },
             { 
                 kind: 'WHEN', 
                 mask: 'I want click on table cell <table>',
+                name: 'Click on table cell',
                 description: 'Try to find table cell and click on it. You need to select table row and column <table:column:row>' 
             },
             { 
                 kind: 'THEN', 
                 mask: '<variable> text should equal "value"',
+                name: 'Compare value',
                 description: 'Text value in selected element should be equal to some value'
             }
         ];

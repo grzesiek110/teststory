@@ -1,19 +1,25 @@
+import { ParserRuleContext } from 'antlr4ts';
+import { AbstractParseTreeVisitor } from 'antlr4ts/tree';
 import * as vscode from 'vscode';
+
+import { StoryModel } from '../../grammar/model';
+import { ExpressionTextContext, FeatureKeywordContext, VariableRefContext } from '../../grammar/parser/StoryParser';
+import { StoryVisitor } from '../../grammar/parser/StoryVisitor';
+import { STORY_LANGUAGE_ID } from '../../story.model';
+import { StoryLanguageSupport } from '../story.language-support';
+import { ExpressionCompletionItems, FeatureCompletionItems, VariableRefCompletionItems } from './adapters';
+import { CompletionItemsProvider } from './completions.model';
 import * as snippets from './completions.snippets';
 
-import { StoryFeature, StoryModel, StoryRule, StoryScenario, StructureElement } from '../../grammar/model';
-import { FeatureCompletionItems, ScenarioCompletionItems, RuleCompletionItems } from './adapters';
-import { CompletionItemsProvider } from './completions.model';
-import { parseStoryModel } from '../../grammar/model/builder';
-import { STORY_LANGUAGE_ID } from '../../story.model';
+let storyLanguageSupport: StoryLanguageSupport;
 
+export function createCompletionItemProvider(languageSupport: StoryLanguageSupport) {
+    storyLanguageSupport = languageSupport;
 
-export function createCompletionItemProvider() {
 	return vscode.languages.registerCompletionItemProvider(STORY_LANGUAGE_ID, {
 		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
-			console.log(`proposals - ${position.line}:${position.character}`);
-			const storyModel = parseStoryModel(document);
-			console.log(storyModel.debugString());
+            
+            const storyModel = storyLanguageSupport.getModel(document.uri);
 			const completionProvider = new StoryCompletionItemsProvider(storyModel);
 			return completionProvider.provideCompletionItems(document, position);
 		}
@@ -35,36 +41,15 @@ export class StoryCompletionItemsProvider implements CompletionItemsProvider {
             return [];
         }
 
-        const lineElement = this.model.getElement(lineIndex);
-        if (lineElement){
-            const adapter = this.getCompletionProviderAdapter(lineElement);
-            return adapter.provideCompletionItems(document, position);
-        }
-
-        const nearestElement = this.model.getNearestElementAbove(lineIndex);
-        if (nearestElement){
-            const adapter = this.getCompletionProviderAdapter(nearestElement);
-            return adapter.provideCompletionItems(document, position);
+        const completionProviderFinder = new FindCompletionItemsProvider(position);
+        const completionProvider = this.model.getContext().accept(completionProviderFinder);
+        if (completionProvider){
+            return completionProvider.provideCompletionItems(document, position);
         }
         
         return [];
     }
 
-    private getCompletionProviderAdapter(element: StructureElement): CompletionItemsProvider {
-        switch(element.getType()){
-            case 'FEATURE':
-                return new FeatureCompletionItems(element as StoryFeature);
-
-            case 'SCENARIO':
-                return new ScenarioCompletionItems(element as StoryScenario);
-        
-            case 'RULE':
-                return new RuleCompletionItems(element as StoryRule);
-            
-            default:
-                throw new Error(`No completion provider for type: ${element.getType()}`);
-        }
-    }
 
     private defaultFeatureKeyword(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
         
@@ -91,5 +76,62 @@ export class StoryCompletionItemsProvider implements CompletionItemsProvider {
         return line < lines[0];
     }
 
+
+}
+
+class FindCompletionItemsProvider extends AbstractParseTreeVisitor<CompletionItemsProvider | undefined> 
+                                  implements StoryVisitor<CompletionItemsProvider | undefined> {
+
+    constructor(private position: vscode.Position){
+        super();
+    }
+
+    protected defaultResult() {
+        return undefined;
+    }
+
+    visitVariableRef(ctx: VariableRefContext){
+        if (this.containsPosition(ctx)){
+            return new VariableRefCompletionItems(ctx);
+        }
+        return undefined;
+    }
+
+    visitExpressionText(ctx: ExpressionTextContext){
+        if (this.containsPosition(ctx)){
+            return new ExpressionCompletionItems(ctx);
+        }
+        return undefined;
+    }
+
+    visitFeatureKeyword(ctx: FeatureKeywordContext){
+        if (this.containsPosition(ctx)){
+            return new FeatureCompletionItems(ctx);
+        }
+        return undefined;
+    }
+
+    aggregateResult(aggregate: CompletionItemsProvider | undefined, nextResult: CompletionItemsProvider | undefined): CompletionItemsProvider{
+        if (aggregate && nextResult){
+            throw new Error('Multiple rules matched');
+        }
+        if (nextResult){
+            aggregate = nextResult;
+        }
+        return aggregate;
+    }
+
+    private containsPosition(ctx: ParserRuleContext){
+        const tokenLine = ctx.start.line - 1;
+        if (this.position.line !== tokenLine){
+            return false;
+        }
+
+        const tokenStartIndex = ctx.start.charPositionInLine;
+        const tokenStopIndex = tokenStartIndex + ctx.text.length;
+
+        return this.position.character >= tokenStartIndex &&
+               this.position.character <= tokenStopIndex;
+    }
 
 }

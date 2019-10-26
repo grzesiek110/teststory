@@ -1,7 +1,7 @@
 import { UnknownLineContext } from '../../parser/StoryParser';
-import { StructureElement, StructureElementType } from './story';
+import { StoryLineElement, StructureElementType } from './story';
 
-export class StoryUnknown implements StructureElement {
+export class StoryUnknown implements StoryLineElement {
     constructor(public ctx: Readonly<UnknownLineContext>){}
     
     getType(): StructureElementType {

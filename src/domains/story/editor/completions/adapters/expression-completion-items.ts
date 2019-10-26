@@ -1,13 +1,17 @@
 import * as vs from "vscode";
 
-import { StoryExpression } from "../../../grammar/model/elements";
 import { expressionsService, RuleExpression, RuleDefinition } from "../../../../../services";
 import { CompletionItemsProvider } from "../completions.model";
+import { ExpressionTextContext, ExpressionContext } from "../../../grammar/parser/StoryParser";
+import { findRangeToReplace } from "./utils";
 
 
 export class ExpressionCompletionItems implements CompletionItemsProvider {
+    expression: ExpressionContext;
 
-    constructor(private element: StoryExpression){}
+    constructor(private ctx: ExpressionTextContext){
+        this.expression = <ExpressionContext>ctx.parent;
+    }
     
     provideCompletionItems(_document: vs.TextDocument, _position: vs.Position): vs.CompletionItem[] {        
         const availableRules = expressionsService.getAvailableRules();
@@ -19,26 +23,17 @@ export class ExpressionCompletionItems implements CompletionItemsProvider {
     private createCompletionItem(rule: RuleDefinition): vs.CompletionItem {
 
         const item = new vs.CompletionItem(rule.mask);
-        item.detail = this.getDescription(rule);
+        item.documentation = this.getDescription(rule);
         item.insertText = new vs.SnippetString(rule.snippet);
         item.kind = vs.CompletionItemKind.Text;
-        item.range = this.findRangeToReplace();
+        item.range = findRangeToReplace(this.expression);
 
         return item;
     }
 
     private getDescription(rule: RuleExpression) {
-        return `**${rule.description}**
-               This is expression for ${rule.kind} rule`;
-    }
-
-    private findRangeToReplace() {
-        const line = this.element.ctx.start.line - 1;
-        const startIndex = this.element.ctx.start.charPositionInLine;
-        const endIndex = this.element.ctx.stop.charPositionInLine + this.element.ctx.stop.text.length;
-
-        console.log(line +' '+startIndex+':'+endIndex);
-        return new vs.Range(new vs.Position(line, startIndex), new vs.Position(line, endIndex));
+        return new vs.MarkdownString(
+            `#### ${rule.name} #### \r\n___\r\n${rule.description}\r\n___\r\n rule: ${rule.kind}`);
     }
 
 }

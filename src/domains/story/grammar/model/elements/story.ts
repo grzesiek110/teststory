@@ -2,7 +2,7 @@ import { StoryFeature } from "./story-feature";
 import { StoryScenario } from "./story-scenario";
 import { StoryUnknown } from "./story-unknown";
 import { StoryRule } from "./story-rule";
-import { ModelContext } from "../../parser/StoryParser";
+import { ModelContext, LineContext } from "../../parser/StoryParser";
 
 
 export type StructureElementType = 
@@ -14,7 +14,7 @@ export type StructureElementType =
     'EXAMPLES_LINE' | 
     'UNKNOWN';
 
-export interface StructureElement {
+export interface StoryLineElement {
     getType(): StructureElementType;
     getLine(): number;
     debugString(): string;
@@ -25,7 +25,7 @@ export type Direction =
    'ABOVE' | 'BELOW';
 
 export interface StoryModelStructure {
-    [key: number]: StructureElement;
+    [key: number]: StoryLineElement;
 }
 
 export interface StorySection {
@@ -96,11 +96,11 @@ export class StoryModel {
                      .map(key => Number(key));
     }
 
-    getElement(line: number): StructureElement | undefined {
+    getElement(line: number): StoryLineElement | undefined {
         return this.structure[line];
     }
 
-    getElements<T extends StructureElement>(startLine: number, endLine?: number, onlyStoryElements = true, type?: StructureElementType): T[] {
+    getElements<T extends StoryLineElement>(startLine: number, endLine?: number, onlyStoryElements = true, type?: StructureElementType): T[] {
         const elements = this.getUsedLines(onlyStoryElements)
                  .filter(line => line >= startLine)
                  .filter(line => endLine ? line <= endLine : true)
@@ -109,11 +109,11 @@ export class StoryModel {
         return elements as T[];
     }
 
-    getNearestElementAbove<T extends StructureElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
+    getNearestElementAbove<T extends StoryLineElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
         return this.findElementByTypeAndDirection('ABOVE', onlyStoryElements, queryLine, type);
     }
 
-    getNearestElementBelow<T extends StructureElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
+    getNearestElementBelow<T extends StoryLineElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
         return this.findElementByTypeAndDirection('BELOW', onlyStoryElements, queryLine, type);
     }
 
@@ -135,11 +135,11 @@ export class StoryModel {
         return debugTree;
     }    
 
-    private addStructureElement(line: number, element: StructureElement){
+    private addStructureElement(line: number, element: StoryLineElement){
         this.structure[line] = element;
     }
 
-    private findElementByTypeAndDirection<T extends StructureElement>(direction: Direction, onlyStoryElements: boolean, queryLine: number, type?: StructureElementType){
+    private findElementByTypeAndDirection<T extends StoryLineElement>(direction: Direction, onlyStoryElements: boolean, queryLine: number, type?: StructureElementType){
         if (this.isEmpty()){
             return undefined;
         }

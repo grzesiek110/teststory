@@ -9,7 +9,7 @@ import { DiagnosticsProviderRule } from "../diagnostics.model";
 
 export class KeywordSpellingDiagnostics implements DiagnosticsProviderRule{
 
-    createDiagnostics(document: vs.TextDocument, diagnostics: vs.Diagnostic[], model: StoryModel): void {
+    createDiagnostics(_uri: vs.Uri, diagnostics: vs.Diagnostic[], model: StoryModel): void {
         model.getContext().accept(new KeywordSpellingVisitior(diagnostics));
     }
 }

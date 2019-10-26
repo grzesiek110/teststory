@@ -1,31 +1,35 @@
-import { CompletionItem, Position, TextDocument } from "vscode";
-import { TerminalNode } from "antlr4ts/tree";
+import * as vs from "vscode";
 
-import { StoryFeature } from "../../../grammar/model/elements";
-import { StoryLexer } from "../../../grammar/parser/StoryLexer";
 import { CompletionItemsProvider } from "../completions.model";
+import { FeatureKeywordContext, StoryParser } from "../../../grammar/parser/StoryParser";
+import { findRangeToReplace } from "./utils";
 
 
 
 export class FeatureCompletionItems implements CompletionItemsProvider {
     
-    constructor(private element: StoryFeature){}
+    constructor(private ctx: FeatureKeywordContext){}
     
-    provideCompletionItems(_document: TextDocument, position: Position): CompletionItem[] {
+    provideCompletionItems(_document: vs.TextDocument, _position: vs.Position): vs.CompletionItem[] {
         
-        const featureNode = this.element.ctx.getToken(StoryLexer.FEATURE, 0);
-        if (featureNode){
-            if (this.atFeatureKeyword(position.character, featureNode)){
-                return [
-                    new CompletionItem('Feature: ')
-                ];
-            }
+        const wrongFeature = this.ctx.tryGetToken(StoryParser.WRONG_FEATURE, 0);
+        if (wrongFeature){
+            return [
+                this.createFeatureKeyword()
+            ];
         }
+
         return [];
     }
 
-    private atFeatureKeyword(position: number, node: TerminalNode) {
-        return position >= node.symbol.charPositionInLine && 
-               position <= (node.symbol.charPositionInLine + node.text.length);
+    private createFeatureKeyword(): vs.CompletionItem {
+
+        const item = new vs.CompletionItem('Feature:');
+        item.kind = vs.CompletionItemKind.Keyword;
+        item.range = findRangeToReplace(this.ctx);
+        item.preselect = true;
+        
+        return item;
     }
+
 }
