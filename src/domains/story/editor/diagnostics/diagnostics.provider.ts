@@ -13,10 +13,9 @@ const diagnosticsRules: DiagnosticsProviderRule[] = [
 ]; 
 
 export function createDiagnosticsProvider(context: vscode.ExtensionContext) {
-	const collection = vscode.languages.createDiagnosticCollection('plaintext');
-	if (vscode.window.activeTextEditor) {
-		updateDiagnostics(vscode.window.activeTextEditor.document, collection);
-	}
+	const collection = vscode.languages.createDiagnosticCollection("teststory-story");
+	vscode.workspace.onDidChangeTextDocument(event => textDocumentChange(event, collection));
+
 	context.subscriptions.push(vscode.window.onDidChangeActiveTextEditor(editor => {
 		if (editor) {
 			updateDiagnostics(editor.document, collection);
@@ -24,18 +23,19 @@ export function createDiagnosticsProvider(context: vscode.ExtensionContext) {
 	}));
 }
 
-function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
-	console.log('update diagnostics ' + document.uri.fsPath);
-
-	if (document && path.extname(document.uri.fsPath) === '.story') {
-
-		const diagnostics = [];
-		const storyModel = parseStoryModel(document);
-
-		diagnosticsRules.forEach(rule => rule.createDiagnostics(document, diagnostics, storyModel));
-		collection.set(document.uri, diagnostics);
-
-	} else {
-		collection.clear();
+function textDocumentChange(event: vscode.TextDocumentChangeEvent, collection: vscode.DiagnosticCollection){
+	const document = event.document;
+	if (document && path.extname(document.uri.fsPath) === '.story'){
+		updateDiagnostics(document, collection);
 	}
+}
+
+function updateDiagnostics(document: vscode.TextDocument, collection: vscode.DiagnosticCollection): void {
+	collection.delete(document.uri);
+
+	const diagnostics = [];
+	const storyModel = parseStoryModel(document);
+
+	diagnosticsRules.forEach(rule => rule.createDiagnostics(document, diagnostics, storyModel));
+	collection.set(document.uri, diagnostics);	
 }

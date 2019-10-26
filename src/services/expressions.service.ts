@@ -25,7 +25,6 @@ export class ExpressionsService {
     }
 
     isValid(kind: string, mask: string){
-        console.log('check '+kind+' '+mask);
         return this.getAvailableRules()
             .filter(rule => rule.kind === kind)
             .map(rule => rule.mask)

@@ -1,15 +1,17 @@
-  A tutuaj dodam jakiś tesk
+  A tutuaj dodam jakiś tesk # plus komentarz
+ Jakieś + nieznane ; || elementy ?>>
+feature :  Witaj przygodo! #koment
 
-Feature: Witaj przygodo!
-
-Scenario Wyprawa do krainy parserów
+Scenario Wyprawa do krainy parserów #ko
 
  I tu też
-    Given Open webpage <strona_logowania>
-    And Wait for browser to show element <element>
-    And Set something
+    Given Open webpage <strona_logowania> # koment
+    when brzydko
+    given Zly 
+    And Wait for browser to show element < bledna nazwa zmiennej  element>
+  #  and Set something
+    and tomorrow
 
-
-    Then Click on element <element>  
-    And Compare text from element <element> to "Jakis tekst"
-    
+    Then Click on element <element d <fg #komentarz 23
+    #And Compare text from element <element> to "Jakis tekst"
+    #then error #komentarz

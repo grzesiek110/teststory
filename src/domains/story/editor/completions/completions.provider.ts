@@ -5,10 +5,11 @@ import { StoryFeature, StoryModel, StoryRule, StoryScenario, StructureElement } 
 import { FeatureCompletionItems, ScenarioCompletionItems, RuleCompletionItems } from './adapters';
 import { CompletionItemsProvider } from './completions.model';
 import { parseStoryModel } from '../../grammar/model/builder';
+import { STORY_LANGUAGE_ID } from '../../story.model';
 
 
 export function createCompletionItemProvider() {
-	return vscode.languages.registerCompletionItemProvider('plaintext', {
+	return vscode.languages.registerCompletionItemProvider(STORY_LANGUAGE_ID, {
 		provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext) {
 			console.log(`proposals - ${position.line}:${position.character}`);
 			const storyModel = parseStoryModel(document);
