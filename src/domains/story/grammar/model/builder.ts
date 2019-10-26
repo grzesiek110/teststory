@@ -27,10 +27,11 @@ export function parseDocument(documentText: string) {
     return parser.model();
 }
 
-function buildStoryModel(psrserModel: ModelContext) {
+function buildStoryModel(ctx: ModelContext) {
     const storyModelBuilder = new Builder();
-    ParseTreeWalker.DEFAULT.walk(storyModelBuilder as ParseTreeListener, psrserModel);
+    ParseTreeWalker.DEFAULT.walk(storyModelBuilder as ParseTreeListener, ctx);
     const storyModel = storyModelBuilder.model;
+    storyModel.setContext(ctx);
     return storyModel;
 }
 

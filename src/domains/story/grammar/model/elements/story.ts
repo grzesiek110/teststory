@@ -2,6 +2,7 @@ import { StoryFeature } from "./story-feature";
 import { StoryScenario } from "./story-scenario";
 import { StoryUnknown } from "./story-unknown";
 import { StoryRule } from "./story-rule";
+import { ModelContext } from "../../parser/StoryParser";
 
 
 export type StructureElementType = 
@@ -32,11 +33,19 @@ export interface StorySection {
 }
 
 export class StoryModel {
+    private ctx: ModelContext;
     private feature: StoryFeature;
     private scenarios: StoryScenario[] = [];
     private unknowns: StoryUnknown[] = [];
     private structure: StoryModelStructure = {};
-    
+
+    setContext(ctx: ModelContext) {
+        this.ctx = ctx;
+    }
+
+    getContext(): Readonly<ModelContext> {
+        return this.ctx;
+    }
 
     setFeature(feature: StoryFeature){
         this.feature = feature;

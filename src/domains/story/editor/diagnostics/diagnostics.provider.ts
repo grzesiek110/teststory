@@ -4,12 +4,14 @@ import * as vscode from 'vscode';
 import { parseStoryModel } from '../../grammar/model/builder';
 import { DiagnosticsProviderRule } from './diagnostics.model';
 import { ExpressionDiagnostics, ScenarioSequenceDiagnostics, UnknownLinesDiagnostics } from './adapters';
+import { KeywordSpellingDiagnostics } from './adapters/keyword-spelling-diagnostics';
 
 
 const diagnosticsRules: DiagnosticsProviderRule[] = [
 	new ExpressionDiagnostics(),
 	new ScenarioSequenceDiagnostics(),
 	new UnknownLinesDiagnostics(),
+	new KeywordSpellingDiagnostics()
 ]; 
 
 export function createDiagnosticsProvider(context: vscode.ExtensionContext) {
