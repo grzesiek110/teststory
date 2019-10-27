@@ -1,15 +1,14 @@
 import * as vscode from 'vscode';
 import { ParserRuleContext } from 'antlr4ts';
-import { AbstractParseTreeVisitor } from 'antlr4ts/tree';
-
 import { StoryModel } from '../../../grammar/model';
-import { ExpressionContext, ExpressionTextContext, FeatureKeywordContext, UnknownLineContext, VariableRefContext } from '../../../grammar/parser/StoryParser';
-import { StoryVisitor } from '../../../grammar/parser/StoryVisitor';
+
+import { ExpressionContext, ExpressionTextContext, LineContext, UnknownLineContext, VariableRefContext } from '../../../grammar/parser/StoryParser';
 import { CompletionItemsProvider } from '../completions.model';
+import { AbstractArrayTreeVisitor } from './abstract-array-tree-visitior';
 import * as snippets from './completions.snippets';
 import { EmptyLineItemsProvider } from './empty-line.items-provider';
 import { ExpressionItemsProvider } from './expression.items-provider';
-import { FeatureItemsProvider } from './feature.items-provider';
+import { WrongKeywordsItemsProvider } from './feature.items-provider';
 import { UnknownLineItemsProvider } from './unknown-line.items-provider';
 import { VariableRefItemsProvider } from './variable-ref.items-provider';
 
@@ -34,13 +33,7 @@ export class ModelRootItemsProvider implements CompletionItemsProvider {
             return this.getEmptylineCompletionItems(document, position);
         }
 
-        const completionProviderFinder = new FindCompletionItemsProvider(position);
-        const completionProvider = this.model.getContext().accept(completionProviderFinder);
-        if (completionProvider){
-            return completionProvider.provideCompletionItems(document, position);
-        }
-        
-        return [];
+        return this.model.getContext().accept(new FindCompletionItemsProvider(document, position));
     }
 
 
@@ -83,63 +76,58 @@ export class ModelRootItemsProvider implements CompletionItemsProvider {
     }
 }
 
-class FindCompletionItemsProvider extends AbstractParseTreeVisitor<CompletionItemsProvider | undefined> 
-                                  implements StoryVisitor<CompletionItemsProvider | undefined> {
+class FindCompletionItemsProvider extends AbstractArrayTreeVisitor<vscode.CompletionItem> {
 
-    constructor(private position: vscode.Position){
+    constructor(private document: vscode.TextDocument, private position: vscode.Position){
         super();
     }
 
-    protected defaultResult() {
-        return undefined;
+    visitLine(ctx: LineContext){
+        if (this.containsPosition(ctx)){
+            const wrongKeywords = new WrongKeywordsItemsProvider(ctx);
+            const wrongKeywordsItems = wrongKeywords.provideCompletionItems(this.document, this.position);
+            if (wrongKeywordsItems && wrongKeywordsItems.length){
+                return wrongKeywordsItems;
+            }
+        }
+        return super.visitChildren(ctx);
     }
 
     visitUnknownLine(ctx: UnknownLineContext){
         if (this.containsPosition(ctx)){
-            return new UnknownLineItemsProvider(ctx);
+            return new UnknownLineItemsProvider(ctx)
+                .provideCompletionItems(this.document, this.position);
         }
     }
-
-    visitFeatureKeyword(ctx: FeatureKeywordContext){
-        if (this.containsPosition(ctx)){
-            return new FeatureItemsProvider(ctx);
-        }
-    }
-
+    
     visitExpression(ctx: ExpressionContext){
         if (this.containsPosition(ctx) && this.expressionIsEmpty(ctx)){
-            return new ExpressionItemsProvider(ctx);
+            return new ExpressionItemsProvider(ctx)
+                .provideCompletionItems(this.document, this.position);
         }
         return super.visitChildren(ctx);
     }
 
     visitExpressionText(ctx: ExpressionTextContext){
         if (this.containsPosition(ctx)){
-            return new ExpressionItemsProvider(ctx.parent as ExpressionContext);
+            return new ExpressionItemsProvider(ctx.parent as ExpressionContext)
+                .provideCompletionItems(this.document, this.position);
         }
     }
 
     visitVariableRef(ctx: VariableRefContext){
         if (this.containsPosition(ctx)){
             if (this.isPositionAtBorderOfVariableRef(ctx)){
-                return new CombinedCompletionItemsProvider(
+                const combinedProvider =  new CombinedCompletionItemsProvider(
                     new ExpressionItemsProvider(ctx.parent as ExpressionContext),
-                    new VariableRefItemsProvider(ctx)
-                );
+                    new VariableRefItemsProvider(ctx));
+                return combinedProvider.provideCompletionItems(this.document, this.position);
+
             } else {
-                return new VariableRefItemsProvider(ctx);
+                return new VariableRefItemsProvider(ctx)
+                    .provideCompletionItems(this.document, this.position);
             }
         }
-    }
-
-    aggregateResult(aggregate: CompletionItemsProvider | undefined, nextResult: CompletionItemsProvider | undefined): CompletionItemsProvider{
-        if (aggregate && nextResult){
-            aggregate = new CombinedCompletionItemsProvider(aggregate, nextResult);
-        }
-        if (nextResult){
-            aggregate = nextResult;
-        }
-        return aggregate;
     }
 
     private expressionIsEmpty(ctx: ExpressionContext) {

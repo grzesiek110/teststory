@@ -39,7 +39,7 @@ export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
         
         const line = rule.ctx.start.line -1;
         const startIndex = rule.ctx.start.charPositionInLine;
-        const endIndex = startIndex + rule.ctx.stop.text.length;
+        const endIndex = startIndex + rule.getKeywordToken().text.length;
         
         const message = lastRuleType ? 
             `${rule.kind} is not allowed after ${lastRuleType}` :

@@ -1,11 +1,11 @@
 import * as vs from "vscode";
 import { ParserRuleContext } from "antlr4ts";
-import { AbstractParseTreeVisitor } from "antlr4ts/tree";
 
 import { getStoryLanguageSupport } from "../../../../../extension";
 import { AndKeywordContext, FeatureKeywordContext, GivenKeywordContext, ScenarioKeywordContext, ScenarioOutlineKeywordContext, ThenKeywordContext, WhenKeywordContext } from "../../../grammar/parser/StoryParser";
-import { StoryVisitor } from "../../../grammar/parser/StoryVisitor";
 import { CompletionItemsProvider } from "../completions.model";
+import { AbstractArrayTreeVisitor } from "./abstract-array-tree-visitior";
+
 
 
 
@@ -28,15 +28,10 @@ export class EmptyLineItemsProvider implements CompletionItemsProvider {
 
 }
 
-class EmptyLineContextProvider extends AbstractParseTreeVisitor<vs.CompletionItem[]> 
-                               implements StoryVisitor<vs.CompletionItem[]> {
+class EmptyLineContextProvider extends AbstractArrayTreeVisitor<vs.CompletionItem> {
 
     constructor(private emptyLine: string, private position: vs.Position){
         super();
-    }
-
-    protected defaultResult() {
-        return [];
     }
 
     visitFeatureKeyword(ctx: FeatureKeywordContext){
@@ -87,19 +82,6 @@ class EmptyLineContextProvider extends AbstractParseTreeVisitor<vs.CompletionIte
         return [
             this.createRuleItem(this.emptyLine, ctx, this.position, 'And')
         ];
-    }
-
-    aggregateResult(aggregate: vs.CompletionItem[], nextResult: vs.CompletionItem[]): vs.CompletionItem[] {
-        if (aggregate.length && nextResult.length){
-            aggregate = [
-                ...aggregate,
-                ...nextResult
-            ];
-        }
-        if (nextResult.length){
-            aggregate = nextResult;
-        }
-        return aggregate;
     }
 
     private createRuleItem(emptyLine: string, keywordContext: ParserRuleContext, position: vs.Position, keywordName: string) {

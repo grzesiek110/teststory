@@ -151,16 +151,20 @@ WRONG_EXAMPLES:
   'examples';
 
 GIVEN: 'Given';
-WRONG_GIVEN: 'given';
+WRONG_GIVEN: 
+  'Given:' | 'given' ;
 
 WHEN: 'When';
-WRONG_WHEN: 'when';
+WRONG_WHEN: 
+  'When:' | 'when';
 
 THEN: 'Then';
-WRONG_THEN: 'then';
+WRONG_THEN: 
+  'Then:' | 'then';
 
 AND: 'And';
-WRONG_AND: 'and';
+WRONG_AND: 
+  'And:' | 'and';
 
 COLON: ':';
 REF_OPEN: '<';
