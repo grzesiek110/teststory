@@ -1,12 +1,12 @@
 import * as vs from "vscode";
-
-import { expressionsService, RuleExpression, RuleDefinition } from "../../../../../services";
+import { expressionsService, RuleDefinition, RuleExpression } from "../../../../../services";
+import { ExpressionContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
-import { ExpressionTextContext, ExpressionContext, StoryParser } from "../../../grammar/parser/StoryParser";
 import { findRangeToReplace } from "./utils";
 
 
-export class ExpressionCompletionItems implements CompletionItemsProvider {
+
+export class ExpressionItemsProvider implements CompletionItemsProvider {
 
     constructor(private ctx: ExpressionContext){}
     

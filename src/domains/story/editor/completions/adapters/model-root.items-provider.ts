@@ -3,16 +3,19 @@ import { ParserRuleContext } from 'antlr4ts';
 import { AbstractParseTreeVisitor } from 'antlr4ts/tree';
 
 import { StoryModel } from '../../../grammar/model';
-import { ExpressionTextContext, FeatureKeywordContext, VariableRefContext, ExpressionContext } from '../../../grammar/parser/StoryParser';
+import { ExpressionContext, ExpressionTextContext, FeatureKeywordContext, UnknownLineContext, VariableRefContext } from '../../../grammar/parser/StoryParser';
 import { StoryVisitor } from '../../../grammar/parser/StoryVisitor';
 import { CompletionItemsProvider } from '../completions.model';
-import { ExpressionCompletionItems } from './expression-completion-items';
-import { FeatureCompletionItems } from './feature-completion-items';
-import { VariableRefCompletionItems } from './variable-ref-completion-items';
-
 import * as snippets from './completions.snippets';
+import { EmptyLineItemsProvider } from './empty-line.items-provider';
+import { ExpressionItemsProvider } from './expression.items-provider';
+import { FeatureItemsProvider } from './feature.items-provider';
+import { UnknownLineItemsProvider } from './unknown-line.items-provider';
+import { VariableRefItemsProvider } from './variable-ref.items-provider';
 
-export class RootCompletionItemsProvider implements CompletionItemsProvider {
+
+
+export class ModelRootItemsProvider implements CompletionItemsProvider {
 
     constructor(private model: StoryModel){}
 
@@ -27,6 +30,10 @@ export class RootCompletionItemsProvider implements CompletionItemsProvider {
             return [];
         }
 
+        if (this.emptyOrNotExistingLine(lineIndex, document, position)){
+            return this.getEmptylineCompletionItems(document, position);
+        }
+
         const completionProviderFinder = new FindCompletionItemsProvider(position);
         const completionProvider = this.model.getContext().accept(completionProviderFinder);
         if (completionProvider){
@@ -39,8 +46,8 @@ export class RootCompletionItemsProvider implements CompletionItemsProvider {
 
     private defaultFeatureKeyword(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
         
-        const item = new vscode.CompletionItem('Feature');
-        item.detail = 'Create Feature: element';
+        const item = new vscode.CompletionItem('Create new story');
+        item.detail = 'Create new story';
         item.insertText = new vscode.SnippetString(snippets.default_feature_for_empty_file);
         item.kind = vscode.CompletionItemKind.Keyword;
         item.range = this.findRangeToInsertFeatureKeyword(document, position);
@@ -62,7 +69,18 @@ export class RootCompletionItemsProvider implements CompletionItemsProvider {
         return line < lines[0];
     }
 
+    private emptyOrNotExistingLine(lineIndex: number, document: vscode.TextDocument, position: vscode.Position) {
+        if (!this.model.getElement(lineIndex)){
+            const lineContent = document.lineAt(position.line).text;
+            return lineContent.trim().length === 0;
+        }
+    }
 
+    private getEmptylineCompletionItems(document: vscode.TextDocument, position: vscode.Position): vscode.CompletionItem[] {
+        const emptyLineContent = document.lineAt(position.line).text;
+        const provider = new EmptyLineItemsProvider(emptyLineContent);
+        return provider.provideCompletionItems(document, position);
+    }
 }
 
 class FindCompletionItemsProvider extends AbstractParseTreeVisitor<CompletionItemsProvider | undefined> 
@@ -76,39 +94,42 @@ class FindCompletionItemsProvider extends AbstractParseTreeVisitor<CompletionIte
         return undefined;
     }
 
+    visitUnknownLine(ctx: UnknownLineContext){
+        if (this.containsPosition(ctx)){
+            return new UnknownLineItemsProvider(ctx);
+        }
+    }
+
     visitFeatureKeyword(ctx: FeatureKeywordContext){
         if (this.containsPosition(ctx)){
-            return new FeatureCompletionItems(ctx);
+            return new FeatureItemsProvider(ctx);
         }
-        return undefined;
     }
 
     visitExpression(ctx: ExpressionContext){
         if (this.containsPosition(ctx) && this.expressionIsEmpty(ctx)){
-            return new ExpressionCompletionItems(ctx);
+            return new ExpressionItemsProvider(ctx);
         }
         return super.visitChildren(ctx);
     }
 
     visitExpressionText(ctx: ExpressionTextContext){
         if (this.containsPosition(ctx)){
-            return new ExpressionCompletionItems(ctx.parent as ExpressionContext);
+            return new ExpressionItemsProvider(ctx.parent as ExpressionContext);
         }
-        return undefined;
     }
 
     visitVariableRef(ctx: VariableRefContext){
         if (this.containsPosition(ctx)){
             if (this.isPositionAtBorderOfVariableRef(ctx)){
                 return new CombinedCompletionItemsProvider(
-                    new ExpressionCompletionItems(ctx.parent as ExpressionContext),
-                    new VariableRefCompletionItems(ctx)
+                    new ExpressionItemsProvider(ctx.parent as ExpressionContext),
+                    new VariableRefItemsProvider(ctx)
                 );
             } else {
-                return new VariableRefCompletionItems(ctx);
+                return new VariableRefItemsProvider(ctx);
             }
         }
-        return undefined;
     }
 
     aggregateResult(aggregate: CompletionItemsProvider | undefined, nextResult: CompletionItemsProvider | undefined): CompletionItemsProvider{

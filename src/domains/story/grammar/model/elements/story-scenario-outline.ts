@@ -1,22 +1,22 @@
 
 import { StorySection, StoryLineElement, StructureElementType } from './story';
-import { ScenarioContext } from '../../parser/StoryParser';
+import { ScenarioOutlineContext } from '../../parser/StoryParser';
 import { StoryRule } from './story-rule';
 
 
-export class StoryScenario implements StorySection, StoryLineElement {
+export class StoryScenarioOutline implements StorySection, StoryLineElement {
     private name: string;
     private endLine: number;
     private rules: StoryRule[] = [];
 
-    constructor(public ctx: ScenarioContext){}
+    constructor(public ctx: ScenarioOutlineContext){}
 
-    getContext(): ScenarioContext {
+    getContext(): ScenarioOutlineContext {
         return this.ctx;
     }
 
     getType(): StructureElementType {
-        return 'SCENARIO';
+        return 'SCENARIO OUTLINE';
     }
 
     getLine(): number {
@@ -24,7 +24,7 @@ export class StoryScenario implements StorySection, StoryLineElement {
     }
 
     debugString(): string {
-        return `Scenario: ${this.name} lines [${this.getLine()}-${this.getEndLine()}]`;
+        return `Scenario Outline: ${this.name} lines [${this.getLine()}-${this.getEndLine()}]`;
     }
 
     setSectionName(name: string): void {

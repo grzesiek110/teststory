@@ -6,6 +6,10 @@ export class StoryFeature implements StorySection, StoryLineElement {
     
     constructor(public ctx: Readonly<FeatureContext>){}
     
+    getContext(): FeatureContext {
+        return this.ctx;
+    }
+
     getType(): StructureElementType {
         return 'FEATURE';
     }

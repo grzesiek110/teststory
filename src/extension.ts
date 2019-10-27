@@ -6,6 +6,10 @@ import { StoryLanguageSupport } from './domains/story/editor/story.language-supp
 
 const storyLanguageSupport = new StoryLanguageSupport();
 
+export function getStoryLanguageSupport() {
+	return storyLanguageSupport;
+}
+
 export function activate(context: vscode.ExtensionContext) {
 	createDiagnosticsProvider(storyLanguageSupport);	
 	context.subscriptions.push(createCompletionItemProvider(storyLanguageSupport));

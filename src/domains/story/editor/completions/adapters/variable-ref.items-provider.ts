@@ -5,7 +5,7 @@ import { CompletionItemsProvider } from "../completions.model";
 import { findRangeToReplace } from "./utils";
 
 
-export class VariableRefCompletionItems implements CompletionItemsProvider {
+export class VariableRefItemsProvider implements CompletionItemsProvider {
     
     constructor(private ctx: VariableRefContext){}
     

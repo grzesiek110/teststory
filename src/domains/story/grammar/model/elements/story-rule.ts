@@ -23,6 +23,10 @@ export class StoryRule implements StoryLineElement{
 
     constructor(public kind: RuleType, public ctx: Readonly<RuleContext>){}
 
+    getContext(): RuleContext {
+        return this.ctx;
+    }
+
     getType(): StructureElementType {
         return 'RULE';
     }

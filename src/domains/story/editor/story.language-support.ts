@@ -80,7 +80,6 @@ export class StoryLanguageSupport {
 
     private textDocumentOpen(document: vs.TextDocument): any {
         if (this.isThisStoryDocument(document)){
-            console.log('opnme');
             this.updateModel(document);
         }        
     }

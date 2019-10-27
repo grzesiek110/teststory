@@ -11,3 +11,16 @@ export function findRangeToReplace(ctx: ParserRuleContext) {
 
     return new Range(new Position(line, startIndex), new Position(line, endIndex));
 }
+
+export function containsPosition(ctx: ParserRuleContext, position: Position){
+    const tokenLine = ctx.start.line - 1;
+    if (position.line !== tokenLine){
+        return false;
+    }
+
+    const tokenStartIndex = ctx.start.charPositionInLine;
+    const tokenStopIndex = tokenStartIndex + ctx.text.length;
+
+    return position.character >= tokenStartIndex &&
+           position.character <= tokenStopIndex;
+}

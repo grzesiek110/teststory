@@ -1,12 +1,12 @@
 import * as vs from "vscode";
-
-import { CompletionItemsProvider } from "../completions.model";
 import { FeatureKeywordContext, StoryParser } from "../../../grammar/parser/StoryParser";
+import { CompletionItemsProvider } from "../completions.model";
 import { findRangeToReplace } from "./utils";
 
 
 
-export class FeatureCompletionItems implements CompletionItemsProvider {
+
+export class FeatureItemsProvider implements CompletionItemsProvider {
     
     constructor(private ctx: FeatureKeywordContext){}
     

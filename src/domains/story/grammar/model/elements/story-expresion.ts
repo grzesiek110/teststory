@@ -17,6 +17,10 @@ export class StoryExpression implements StoryLineElement {
     
     constructor(public ctx: Readonly<ExpressionContext>){}
 
+    getContext(): ExpressionContext {
+        return this.ctx;
+    }
+
     getType(): StructureElementType {
         return 'EXPRESSION';
     }

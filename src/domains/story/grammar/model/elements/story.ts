@@ -3,11 +3,14 @@ import { StoryScenario } from "./story-scenario";
 import { StoryUnknown } from "./story-unknown";
 import { StoryRule } from "./story-rule";
 import { ModelContext, LineContext } from "../../parser/StoryParser";
+import { ParserRuleContext } from "antlr4ts";
+import { StoryScenarioOutline } from "./story-scenario-outline";
 
 
 export type StructureElementType = 
     'FEATURE' | 
     'SCENARIO' |
+    'SCENARIO OUTLINE' |
     'RULE' |
     'EXPRESSION' |
     'EXAMPLES' |
@@ -15,6 +18,7 @@ export type StructureElementType =
     'UNKNOWN';
 
 export interface StoryLineElement {
+    getContext(): ParserRuleContext;
     getType(): StructureElementType;
     getLine(): number;
     debugString(): string;
@@ -36,6 +40,7 @@ export class StoryModel {
     private ctx: ModelContext;
     private feature: StoryFeature;
     private scenarios: StoryScenario[] = [];
+    private scenariosOutline: StoryScenarioOutline[] = [];
     private unknowns: StoryUnknown[] = [];
     private structure: StoryModelStructure = {};
 
@@ -59,6 +64,11 @@ export class StoryModel {
     addScenario(scenario: StoryScenario){
         this.scenarios.push(scenario);
         this.addStructureElement(scenario.getLine(), scenario);
+    }
+
+    addScenarioOutline(scenario: StoryScenarioOutline){
+        this.scenariosOutline.push(scenario);
+        this.addStructureElement(scenario.getLine(), scenario);        
     }
 
     getScenarios(): Readonly<StoryScenario[]>{
@@ -149,9 +159,9 @@ export class StoryModel {
             usedLines = usedLines.reverse();
         }
 
-        const index = usedLines.findIndex(line => line === queryLine);
+        let nearestElementBelowIndex = this.getNearestExistingElementBelowOrEqual(usedLines, queryLine);
 
-        for(let i = index + 1; i < usedLines.length; i++){
+        for(let i = nearestElementBelowIndex + 1; i < usedLines.length; i++){
             const foundElement = this.getElement(usedLines[i]);
             if (type === undefined || foundElement.getType() === type){
                 return foundElement as T;
@@ -159,6 +169,22 @@ export class StoryModel {
         }
 
         return undefined;
+    }
+
+    private getNearestExistingElementBelowOrEqual(usedLines: number[], queryLine: number){
+        const index = usedLines.findIndex(line => line === queryLine);
+        if (index !== -1){
+            return index;
+        }
+
+        let nearestElementBelowIndex = 0;
+        for(let i = 0; i < usedLines.length; i++){
+            const foundElement = this.getElement(usedLines[i]);
+            if (foundElement !== undefined && foundElement.getLine() > queryLine){
+                nearestElementBelowIndex = i;
+            }
+        }
+        return nearestElementBelowIndex;
     }
 }
 

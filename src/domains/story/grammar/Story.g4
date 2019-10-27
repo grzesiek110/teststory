@@ -26,6 +26,7 @@ unknownLine:
 commmand: 
   feature | 
   scenario |
+  scenarioOutline |
   given |
   when |
   then |

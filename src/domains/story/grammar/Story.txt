@@ -2,9 +2,23 @@
  Jakieś + nieznane ; || elementy ?>>
 feature :  Witaj przygodo! #koment
 
-Scenario Wyprawa do krainy parserów #ko
 
- I tu też
+ 
+Scenario Outline: asd
+  When SO
+
+Scenario: asd
+  When S
+
+
+
+
+
+
+
+
+
+I tu też
     Given Open webpage <strona_logowania> # koment
     when brzydko
     given Zly 
