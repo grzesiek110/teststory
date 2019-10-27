@@ -13,7 +13,27 @@
 		"*"
 	],
 	"main": "./out/extension.js",
-	"contributes": {},
+	"contributes": {
+		"languages": [
+			{
+				"id": "story",
+				"extensions": [
+					".story"
+				],
+				"aliases": [
+					"TestStory story"
+				],
+				"configuration": "./domains/story/editor/story.language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "story",
+				"scopeName": "source.story",
+				"path": "./src/domains/story/editor/story.tmLanguage.json"
+			}
+		]
+	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",

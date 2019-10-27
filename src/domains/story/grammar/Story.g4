@@ -6,13 +6,19 @@ model:
   line*;
 
 line: 
-  emptyLine | commandLine | unknownLine;
+  (emptyLine | commandLine | unknownLine);
 
 emptyLine:
-  WS? EOL;
+  WS? COMMENT? EOL;
 
 commandLine:
-  WS? commmand (EOL | EOF);
+  WS? commmand endOfLine;
+
+endOfLine:
+  EOL | EOF | COMMENT;
+
+comment:
+  WS? COMMENT;
 
 unknownLine:
   WS? ~(FEATURE | SCENARIO | SCENARIO_OUTLINE | EXAMPLES | GIVEN | WHEN | THEN | AND) ~EOL*;
@@ -20,37 +26,66 @@ unknownLine:
 commmand: 
   feature | 
   scenario |
+  scenarioOutline |
   given |
   when |
   then |
   and;
 
 feature:
-  FEATURE WS sectionName;
+  featureKeyword WS sectionName;
+
+featureKeyword:
+  FEATURE |
+  WRONG_FEATURE WS? ':'?;
 
 scenario:
-  SCENARIO WS sectionName;
+  scenarioKeyword WS sectionName;
+
+scenarioKeyword:
+  SCENARIO |
+  WRONG_SCENARIO WS? ':'?;
 
 scenarioOutline:
-  SCENARIO_OUTLINE WS sectionName;
+  scenarioOutlineKeyword WS sectionName;
+
+scenarioOutlineKeyword:
+  SCENARIO_OUTLINE |
+  WRONG_SCENARIO_OUTLINE WS? ':'?;
 
 examples:
-  EXAMPLES WS ;
+  examplesKeyword WS ;
+
+examplesKeyword:
+  EXAMPLES |
+  WRONG_EXAMPLES WS? ':'?;
 
 given: 
-  GIVEN WS expression;
+  givenKeyword WS expression;
+
+givenKeyword:
+  GIVEN | WRONG_GIVEN;
 
 when: 
-  WHEN WS expression;
+  whenKeyword WS expression;
+
+whenKeyword:
+  WHEN | WRONG_WHEN;
 
 then:
-  THEN WS expression;  
+  thenKeyword WS expression;  
+
+thenKeyword:
+  THEN | WRONG_THEN;
 
 and:
-  AND WS expression;
+  andKeyword WS expression;
+
+andKeyword:
+  AND | WRONG_AND;
 
 sectionName:
-  ~EOL*
+  ~(EOL | COMMENT)*
 ;
 
 expression:
@@ -58,24 +93,27 @@ expression:
 ;
 
 expressionText:
-  ~(EOL | '<' | SINGLE_QUOTE | DOUBLE_QUOTE )+
+  ~(EOL | REF_OPEN | SINGLE_QUOTE | DOUBLE_QUOTE | COMMENT)+
 ;
 
 variableRef:
-  REF_OPEN WS? variableName WS? REF_CLOSE;
+  REF_OPEN WS? (variableName | wrongVariableName) WS? REF_CLOSE |
+  REF_OPEN WS? (variableName | wrongVariableName) WS?;
 
 variableName:
   VARIABLE_NAME;
 
+wrongVariableName:
+  ~(REF_CLOSE | EOL | COMMENT)*;
+
 staticValueSingle:
-  SINGLE_QUOTE staticValue SINGLE_QUOTE;
+  SINGLE_QUOTE staticValue SINGLE_QUOTE?;
 
 staticValueDouble:
-  DOUBLE_QUOTE staticValue DOUBLE_QUOTE;
+  DOUBLE_QUOTE staticValue DOUBLE_QUOTE?;
 
 staticValue:
-  ~(SINGLE_QUOTE | DOUBLE_QUOTE)+
-;
+  ~(EOL | SINGLE_QUOTE | DOUBLE_QUOTE | COMMENT)*;
 
 
 // Lexer rules
@@ -86,26 +124,57 @@ fragment POLISH_LETTER:
 fragment ENG_LETTER:
   [a-zA-Z];
 
-fragment SPECIAL_LETTER:
-  [!?;,._];
+fragment SPECIAL_CHARACTER:
+  [!?;:,._];
+
+COMMENT:
+  '#' ~[\r\n]*;
 
 FEATURE: 'Feature:' ;
-SCENARIO_OUTLINE: 'Scenario Outline:';
-SCENARIO: 'Scenario:';
-EXAMPLES: 'Examples:';
-GIVEN: 'Given';
-WHEN: 'When';
-THEN: 'Then';
-AND: 'And';
+WRONG_FEATURE: 
+  'Feature' | 
+  'feature';
 
+SCENARIO_OUTLINE: 'Scenario Outline:';
+WRONG_SCENARIO_OUTLINE: 
+  'Scenario Outline' |
+  'scenario outline' ;
+
+SCENARIO: 'Scenario:';
+WRONG_SCENARIO: 
+  'Scenario' |
+  'scenario' ;
+
+EXAMPLES: 'Examples:';
+WRONG_EXAMPLES: 
+  'Examples' |
+  'examples';
+
+GIVEN: 'Given';
+WRONG_GIVEN: 
+  'Given:' | 'given' ;
+
+WHEN: 'When';
+WRONG_WHEN: 
+  'When:' | 'when';
+
+THEN: 'Then';
+WRONG_THEN: 
+  'Then:' | 'then';
+
+AND: 'And';
+WRONG_AND: 
+  'And:' | 'and';
+
+COLON: ':';
 REF_OPEN: '<';
 REF_CLOSE: '>';
 SINGLE_QUOTE: '\'';
 DOUBLE_QUOTE: '"'; 
 
-VARIABLE_NAME: '_'?( ENG_LETTER | '_')+;
+VARIABLE_NAME: ('_' | ENG_LETTER)*( '_' | ENG_LETTER | NUMBER )+;
 
-WORD: ( ENG_LETTER | POLISH_LETTER | NUMBER | SPECIAL_LETTER )+;
+WORD: ( ENG_LETTER | POLISH_LETTER | NUMBER | SPECIAL_CHARACTER )+;
 
 NUMBER: [0-9]+;
 
@@ -113,3 +182,4 @@ WS: [ \t]+;
 
 EOL: [\r\n]+;
 
+UNKNOWN: .;

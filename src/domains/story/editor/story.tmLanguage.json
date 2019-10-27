@@ -1,0 +1,68 @@
+{
+    "scopeName": "source.story",
+    "patterns": [
+        { "include": "#expression" }
+    ],
+    "repository": {
+      "expression": {
+        "patterns": [
+            { "include": "#feature" },
+            { "include": "#scenario" },
+            { "include": "#scenario-outline" },
+            { "include": "#examples" },
+            { "include": "#given" },
+            { "include": "#when" },
+            { "include": "#then" },
+            { "include": "#and" },
+            { "include": "#comment" },
+            { "include": "#variable-reference" },
+            { "include": "#constant" }
+        ]
+      },
+      "feature": {
+        "match": "^\\s*Feature:",
+        "name": "keyword.control"
+      },
+      "scenario": {
+        "match": "^\\s*Scenario:",
+        "name": "keyword.control"
+      },      
+      "scenario-outline": {
+        "match": "^\\s*Scenario Outline:",
+        "name": "keyword.control"
+      },    
+      "examples": {
+        "match": "^\\s*Examples:",
+        "name": "keyword"
+      },    
+      "given": {
+        "match": "^\\s*Given",
+        "name": "keyword"
+      },
+      "when": {
+        "match": "^\\s*When",
+        "name": "keyword"
+      },      
+      "then": {
+        "match": "^\\s*Then",
+        "name": "keyword"
+      },      
+      "and": {
+        "match": "^\\s*And",
+        "name": "keyword"
+      },      
+      "comment": {
+        "match": "#.*",
+        "name": "comment"
+      },
+      "variable-reference": {
+        "match": "<[^>]*>?",
+        "name": "variable"
+      },
+      "constant": {
+        "match": "\"[^\"]*\"?",
+        "name": "entity.name.function",
+        "patterns": []
+      }      
+    }
+}

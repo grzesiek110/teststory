@@ -2,18 +2,23 @@ import { StoryFeature } from "./story-feature";
 import { StoryScenario } from "./story-scenario";
 import { StoryUnknown } from "./story-unknown";
 import { StoryRule } from "./story-rule";
+import { ModelContext, LineContext } from "../../parser/StoryParser";
+import { ParserRuleContext } from "antlr4ts";
+import { StoryScenarioOutline } from "./story-scenario-outline";
 
 
 export type StructureElementType = 
     'FEATURE' | 
     'SCENARIO' |
+    'SCENARIO OUTLINE' |
     'RULE' |
     'EXPRESSION' |
     'EXAMPLES' |
     'EXAMPLES_LINE' | 
     'UNKNOWN';
 
-export interface StructureElement {
+export interface StoryLineElement {
+    getContext(): ParserRuleContext;
     getType(): StructureElementType;
     getLine(): number;
     debugString(): string;
@@ -24,7 +29,7 @@ export type Direction =
    'ABOVE' | 'BELOW';
 
 export interface StoryModelStructure {
-    [key: number]: StructureElement;
+    [key: number]: StoryLineElement;
 }
 
 export interface StorySection {
@@ -32,11 +37,20 @@ export interface StorySection {
 }
 
 export class StoryModel {
+    private ctx: ModelContext;
     private feature: StoryFeature;
     private scenarios: StoryScenario[] = [];
+    private scenariosOutline: StoryScenarioOutline[] = [];
     private unknowns: StoryUnknown[] = [];
     private structure: StoryModelStructure = {};
-    
+
+    setContext(ctx: ModelContext) {
+        this.ctx = ctx;
+    }
+
+    getContext(): Readonly<ModelContext> {
+        return this.ctx;
+    }
 
     setFeature(feature: StoryFeature){
         this.feature = feature;
@@ -50,6 +64,11 @@ export class StoryModel {
     addScenario(scenario: StoryScenario){
         this.scenarios.push(scenario);
         this.addStructureElement(scenario.getLine(), scenario);
+    }
+
+    addScenarioOutline(scenario: StoryScenarioOutline){
+        this.scenariosOutline.push(scenario);
+        this.addStructureElement(scenario.getLine(), scenario);        
     }
 
     getScenarios(): Readonly<StoryScenario[]>{
@@ -87,11 +106,11 @@ export class StoryModel {
                      .map(key => Number(key));
     }
 
-    getElement(line: number): StructureElement | undefined {
+    getElement(line: number): StoryLineElement | undefined {
         return this.structure[line];
     }
 
-    getElements<T extends StructureElement>(startLine: number, endLine?: number, onlyStoryElements = true, type?: StructureElementType): T[] {
+    getElements<T extends StoryLineElement>(startLine: number, endLine?: number, onlyStoryElements = true, type?: StructureElementType): T[] {
         const elements = this.getUsedLines(onlyStoryElements)
                  .filter(line => line >= startLine)
                  .filter(line => endLine ? line <= endLine : true)
@@ -100,11 +119,11 @@ export class StoryModel {
         return elements as T[];
     }
 
-    getNearestElementAbove<T extends StructureElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
+    getNearestElementAbove<T extends StoryLineElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
         return this.findElementByTypeAndDirection('ABOVE', onlyStoryElements, queryLine, type);
     }
 
-    getNearestElementBelow<T extends StructureElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
+    getNearestElementBelow<T extends StoryLineElement>(queryLine: number, onlyStoryElements = true, type?: StructureElementType): T | undefined {
         return this.findElementByTypeAndDirection('BELOW', onlyStoryElements, queryLine, type);
     }
 
@@ -126,11 +145,11 @@ export class StoryModel {
         return debugTree;
     }    
 
-    private addStructureElement(line: number, element: StructureElement){
+    private addStructureElement(line: number, element: StoryLineElement){
         this.structure[line] = element;
     }
 
-    private findElementByTypeAndDirection<T extends StructureElement>(direction: Direction, onlyStoryElements: boolean, queryLine: number, type?: StructureElementType){
+    private findElementByTypeAndDirection<T extends StoryLineElement>(direction: Direction, onlyStoryElements: boolean, queryLine: number, type?: StructureElementType){
         if (this.isEmpty()){
             return undefined;
         }
@@ -140,9 +159,9 @@ export class StoryModel {
             usedLines = usedLines.reverse();
         }
 
-        const index = usedLines.findIndex(line => line === queryLine);
+        let nearestElementBelowIndex = this.getNearestExistingElementBelowOrEqual(usedLines, queryLine);
 
-        for(let i = index + 1; i < usedLines.length; i++){
+        for(let i = nearestElementBelowIndex + 1; i < usedLines.length; i++){
             const foundElement = this.getElement(usedLines[i]);
             if (type === undefined || foundElement.getType() === type){
                 return foundElement as T;
@@ -150,6 +169,22 @@ export class StoryModel {
         }
 
         return undefined;
+    }
+
+    private getNearestExistingElementBelowOrEqual(usedLines: number[], queryLine: number){
+        const index = usedLines.findIndex(line => line === queryLine);
+        if (index !== -1){
+            return index;
+        }
+
+        let nearestElementBelowIndex = 0;
+        for(let i = 0; i < usedLines.length; i++){
+            const foundElement = this.getElement(usedLines[i]);
+            if (foundElement !== undefined && foundElement.getLine() > queryLine){
+                nearestElementBelowIndex = i;
+            }
+        }
+        return nearestElementBelowIndex;
     }
 }
 

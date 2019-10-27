@@ -1,14 +1,14 @@
-import { TextDocument, Diagnostic, Range, Position, DiagnosticSeverity } from 'vscode';
+import { TextDocument, Diagnostic, Range, Position, DiagnosticSeverity, Uri } from 'vscode';
 import { StoryModel, StoryScenario, RuleType, StoryRule } from '../../../grammar/model';
 import { DiagnosticsProviderRule } from '../diagnostics.model';
 
 export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
     
-    createDiagnostics(document: TextDocument, diagnostics: Diagnostic[], model: StoryModel) {
-        model.getScenarios().forEach(scenario => this.checkSequenceOfRules(document, diagnostics, scenario));
+    createDiagnostics(_uri: Uri, diagnostics: Diagnostic[], model: StoryModel) {
+        model.getScenarios().forEach(scenario => this.checkSequenceOfRules(diagnostics, scenario));
     }
 
-    private checkSequenceOfRules(document: TextDocument, diagnostics: Diagnostic[], scenario: StoryScenario): void {
+    private checkSequenceOfRules(diagnostics: Diagnostic[], scenario: StoryScenario): void {
         const rules = scenario.getRules();
 
         let lastRuleType: RuleType;
@@ -39,7 +39,7 @@ export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
         
         const line = rule.ctx.start.line -1;
         const startIndex = rule.ctx.start.charPositionInLine;
-        const endIndex = startIndex + rule.ctx.stop.text.length;
+        const endIndex = startIndex + rule.getKeywordToken().text.length;
         
         const message = lastRuleType ? 
             `${rule.kind} is not allowed after ${lastRuleType}` :

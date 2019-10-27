@@ -1,4 +1,4 @@
-import { StructureElement, StructureElementType } from './story';
+import { StoryLineElement, StructureElementType } from './story';
 import { ExpressionContext } from '../../parser/StoryParser';
 import { StoryRule } from './story-rule';
 
@@ -9,14 +9,18 @@ interface ExpressionRef {
     type: ExpressionRefType;
 }
 
-export class StoryExpression implements StructureElement {
+export class StoryExpression implements StoryLineElement {
     rule: StoryRule;
     mask = "";
     proposal = "";
     referenceNames: ExpressionRef[] = [];
     
     constructor(public ctx: Readonly<ExpressionContext>){}
-    
+
+    getContext(): ExpressionContext {
+        return this.ctx;
+    }
+
     getType(): StructureElementType {
         return 'EXPRESSION';
     }

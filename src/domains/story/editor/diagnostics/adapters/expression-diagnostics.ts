@@ -1,4 +1,4 @@
-import { Diagnostic, DiagnosticSeverity, Position, Range, TextDocument } from 'vscode';
+import { Diagnostic, DiagnosticSeverity, Position, Range, TextDocument, Uri } from 'vscode';
 
 import { StoryExpression, StoryModel, StoryRule, RuleType } from '../../../grammar/model';
 import { expressionsService } from '../../../../../services';
@@ -6,7 +6,7 @@ import { DiagnosticsProviderRule } from '../diagnostics.model';
 
 export class ExpressionDiagnostics implements DiagnosticsProviderRule {
     
-    createDiagnostics(_document: TextDocument, diagnostics: Diagnostic[], model: StoryModel) {
+    createDiagnostics(_uri: Uri, diagnostics: Diagnostic[], model: StoryModel) {
         const rules = model.getElements<StoryRule>(0, undefined, true, 'RULE');
         
         let lastMainExpressionKind: RuleType = 'GIVEN';

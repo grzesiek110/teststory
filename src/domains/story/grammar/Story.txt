@@ -1,15 +1,34 @@
-  A tutuaj dodam jakiś tesk
-
-Feature: Witaj przygodo!
-
-Scenario Wyprawa do krainy parserów
-
- I tu też
-    Given Open webpage <strona_logowania>
-    And Wait for browser to show element <element>
-    And Set something
+  A tutuaj dodam jakiś tesk # plus komentarz
+ Jakieś + nieznane ; || elementy ?>>
+feature :  Witaj przygodo! #koment
 
 
-    Then Click on element <element>  
-    And Compare text from element <element> to "Jakis tekst"
-    
+ 
+Scenario Outline: asd
+  When SO
+
+Scenario: asd
+  When S
+
+
+
+
+
+
+
+
+
+I tu też
+    Given Open webpage <strona_logowania> # koment
+    when brzydko
+    given Zly 
+    And Wait for browser to show element < bledna nazwa zmiennej  element>
+  #  and Set something
+    and tomorrow
+
+    Then Click on element <element d <fg #komentarz 23
+    And Compare text from element <element> to "Jakis tekst
+    #then error #komentarz
+
+    When Open webpage " #
+    When   
