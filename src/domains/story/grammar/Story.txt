@@ -17,4 +17,4 @@ Scenario Wyprawa do krainy parserów #ko
     #then error #komentarz
 
     When Open webpage " #
-    When Open webpage <>
+    When   

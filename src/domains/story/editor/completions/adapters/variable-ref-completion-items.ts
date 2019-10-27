@@ -1,10 +1,8 @@
-import { CompletionItem, CompletionItemKind, Position, TextDocument, MarkdownString } from "vscode";
+import { CompletionItem, CompletionItemKind, MarkdownString, Position, SnippetString, TextDocument } from "vscode";
 import { VariableDefinition, variablesService } from "../../../../../services";
 import { VariableRefContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
 import { findRangeToReplace } from "./utils";
-
-
 
 
 export class VariableRefCompletionItems implements CompletionItemsProvider {
@@ -18,6 +16,7 @@ export class VariableRefCompletionItems implements CompletionItemsProvider {
     private mapAsCompletionItem(variable: VariableDefinition): CompletionItem {
 
         const item = new CompletionItem(variable.name);
+        item.filterText = this.ctx.text;
         item.insertText = this.getTextToInsert(variable);
         item.documentation = this.getDescription(variable);
         item.kind = CompletionItemKind.Variable;
@@ -26,8 +25,7 @@ export class VariableRefCompletionItems implements CompletionItemsProvider {
         return item;        
     }
 
-
-    private getTextToInsert(variable: VariableDefinition): string | import("vscode").SnippetString {
+    private getTextToInsert(variable: VariableDefinition): string | SnippetString {
         return `<${variable.name}>`;
     }
 

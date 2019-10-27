@@ -9,18 +9,24 @@ export interface RuleExpression {
 } 
 
 export class RuleDefinition implements RuleExpression{
+
     kind: ExpressionType;
     mask: string;
     snippet: string;
     name: string;
     description: string;
+    autoExpandVariable: boolean;
     
     constructor(rule: RuleExpression){
+        const snippetText = RuleDefinition.createSnippet(rule.mask);
+        const autoExpand = RuleDefinition.firstParamIsVariableRef(snippetText);
+
         this.kind = rule.kind;
         this.mask = rule.mask;
-        this.snippet = RuleDefinition.createSnippet(rule.mask);
+        this.snippet = snippetText;
         this.name = rule.name;
         this.description = rule.description;
+        this.autoExpandVariable = autoExpand;
     }
 
     private static createSnippet(mask: string): string {
@@ -54,6 +60,10 @@ export class RuleDefinition implements RuleExpression{
         }
 
         return snippet;
+    }
+
+    static firstParamIsVariableRef(snippetText: string) {
+        return snippetText.indexOf('<$1') !== -1;
     }
 } 
 

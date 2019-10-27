@@ -37,6 +37,11 @@ export class VariablesService {
                 description: 'Page table with customer acounts. Table containst columns: \'name\' and \'number\'',
                 type: 'TABLE' 
             },
+            { 
+                name: 'accounts', 
+                description: 'Page table with counts',
+                type: 'TABLE' 
+            },
         ];
     }
 

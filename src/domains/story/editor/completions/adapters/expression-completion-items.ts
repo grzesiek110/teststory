@@ -2,16 +2,13 @@ import * as vs from "vscode";
 
 import { expressionsService, RuleExpression, RuleDefinition } from "../../../../../services";
 import { CompletionItemsProvider } from "../completions.model";
-import { ExpressionTextContext, ExpressionContext } from "../../../grammar/parser/StoryParser";
+import { ExpressionTextContext, ExpressionContext, StoryParser } from "../../../grammar/parser/StoryParser";
 import { findRangeToReplace } from "./utils";
 
 
 export class ExpressionCompletionItems implements CompletionItemsProvider {
-    expression: ExpressionContext;
 
-    constructor(private ctx: ExpressionTextContext){
-        this.expression = <ExpressionContext>ctx.parent;
-    }
+    constructor(private ctx: ExpressionContext){}
     
     provideCompletionItems(_document: vs.TextDocument, _position: vs.Position): vs.CompletionItem[] {        
         const availableRules = expressionsService.getAvailableRules();
@@ -23,10 +20,17 @@ export class ExpressionCompletionItems implements CompletionItemsProvider {
     private createCompletionItem(rule: RuleDefinition): vs.CompletionItem {
 
         const item = new vs.CompletionItem(rule.mask);
+        item.filterText = this.ctx.text;
         item.documentation = this.getDescription(rule);
         item.insertText = new vs.SnippetString(rule.snippet);
         item.kind = vs.CompletionItemKind.Text;
-        item.range = findRangeToReplace(this.expression);
+        item.range = findRangeToReplace(this.ctx);
+        if (rule.autoExpandVariable){
+            item.command = {
+                title: 'Show available variables',
+                command: 'editor.action.triggerSuggest'
+            };
+        }
 
         return item;
     }
