@@ -24,14 +24,29 @@
 					"TestStory story"
 				],
 				"configuration": "./domains/story/editor/story.language-configuration.json"
-			}
+			},
+			{
+				"id": "rules",
+				"extensions": [
+					".rules"
+				],
+				"aliases": [
+					"TestStory rules"
+				],
+				"configuration": "./domains/rules/editor/rules.language-configuration.json"
+			}			
 		],
 		"grammars": [
 			{
 				"language": "story",
 				"scopeName": "source.story",
 				"path": "./src/domains/story/editor/story.tmLanguage.json"
-			}
+			},
+			{
+				"language": "rules",
+				"scopeName": "source.rules",
+				"path": "./src/domains/rules/editor/rules.tmLanguage.json"
+			}			
 		]
 	},
 	"scripts": {
@@ -40,7 +55,8 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"grammar-story": "antlr4ts -o src/domains/story/grammar/parser -visitor ./src/domains/story/grammar/Story.g4"
+		"grammar-story": "antlr4ts -o src/domains/story/grammar/parser -visitor ./src/domains/story/grammar/Story.g4",
+		"grammar-rules": "antlr4ts -o src/domains/rules/grammar/parser -visitor ./src/domains/rules/grammar/Rules.g4"
 	},
 	"dependencies": {
 		"antlr4": "4.7.2",

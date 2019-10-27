@@ -1,14 +1,17 @@
-GIVEN:
+Given:
     
+    sdsd
+
     # Otwiera wybraną stronę w przeglądarce
     Open webpage "value"
 
     # Czeka kilka sekund dając przeglądarce czas na wczytanie wartości
     Wait for "value" seconds'
 
-WHEN:
+When:
 
     # Klika w wybrany element
+    # Druga linia komentarza
     I want click on element <variable>
 
     # Klika w wybrany wiersz tabeli. Wiersz podajemy na zasadzie:
@@ -17,7 +20,7 @@ WHEN:
 
     I want click on table cell <table>
 
-THEN:
+Then:
 
     # Sprawdza czy tekst w wybranym elemencie ma wymaganą wartość
     <variable> text should equal "value"

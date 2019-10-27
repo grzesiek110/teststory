@@ -1,0 +1,42 @@
+{
+    "scopeName": "source.rules",
+    "patterns": [
+        { "include": "#expression" }
+    ],
+    "repository": {
+      "expression": {
+        "patterns": [
+            { "include": "#given" },
+            { "include": "#when" },
+            { "include": "#then" },
+            { "include": "#comment" },
+            { "include": "#variable-reference" },
+            { "include": "#constant" }
+        ]
+      },
+      "given": {
+        "match": "^\\s*Given:",
+        "name": "keyword.control"
+      },
+      "when": {
+        "match": "^\\s*When:",
+        "name": "keyword.control"
+      },      
+      "then": {
+        "match": "^\\s*Then:",
+        "name": "keyword.control"
+      },        
+      "comment": {
+        "match": "#.*",
+        "name": "comment"
+      },
+      "variable-reference": {
+        "match": "<[^>]*>?",
+        "name": "variable"
+      },
+      "constant": {
+        "match": "\"[^\"]*\"?",
+        "name": "entity.name.function"
+      }      
+    }
+}

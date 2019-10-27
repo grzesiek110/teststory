@@ -41,7 +41,16 @@
 			"startRule": "model",
 			"printParseTree": true,
 			"visualParseTree": true
+		},
+		{
+			"name": "Debug 'Rule' grammar",
+			"type": "antlr-debug",
+			"request": "launch",
+			"input": "src/domains/rules/grammar/Rules.txt",
+			"grammar": "src/domains/rules/grammar/Rules.g4",
+			"startRule": "model",
+			"printParseTree": true,
+			"visualParseTree": true
 		}
-
 	]
 }
