@@ -16,7 +16,7 @@ sectionLine:
   (GIVEN | WHEN | THEN) EOL;
 
 ruleDefinition:
-    commentLine+
+    commentLine*
     ruleLine;        
 
 unknownLine:

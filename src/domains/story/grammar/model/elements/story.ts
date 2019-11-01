@@ -1,3 +1,5 @@
+import { Uri } from "vscode";
+
 import { StoryFeature } from "./story-feature";
 import { StoryScenario } from "./story-scenario";
 import { StoryUnknown } from "./story-unknown";
@@ -5,6 +7,8 @@ import { StoryRule } from "./story-rule";
 import { ModelContext, LineContext } from "../../parser/StoryParser";
 import { ParserRuleContext } from "antlr4ts";
 import { StoryScenarioOutline } from "./story-scenario-outline";
+import { MainRuleType } from "../../../../../shared/common.model";
+
 
 
 export type StructureElementType = 
@@ -44,6 +48,8 @@ export class StoryModel {
     private unknowns: StoryUnknown[] = [];
     private structure: StoryModelStructure = {};
 
+    constructor(public uri: Uri){}
+
     setContext(ctx: ModelContext) {
         this.ctx = ctx;
     }
@@ -77,11 +83,6 @@ export class StoryModel {
 
     addRule(rule: StoryRule){
         this.addStructureElement(rule.getLine(), rule);
-
-        const currentScenario = this.scenarios[this.scenarios.length - 1];
-        if (currentScenario){
-            currentScenario.addRule(rule);
-        }
     }
 
     addUnknown(unknown: StoryUnknown){
@@ -134,6 +135,38 @@ export class StoryModel {
     isElementCorrectType(line: number, type: StructureElementType): unknown {
         return this.structure[line].getType() === type;
     }
+
+    getNearestScopeElementAbove(line: number){
+        const lines = this.getElements(0, line, true);
+        while(lines.length){
+            const line = lines.pop();
+            if (this.isThisScopeLine(line)){
+                return line;
+            }
+        }
+        return undefined;        
+    }
+
+    isThisScopeLine(line: StoryLineElement) {
+        const type = line.getType();
+
+        return type === 'FEATURE' || 
+               type === 'SCENARIO' ||
+               type === 'SCENARIO OUTLINE' ||
+               type === 'EXAMPLES' || 
+               (type === 'RULE' && ((<StoryRule>line).kind === 'GIVEN' || (<StoryRule>line).kind === 'WHEN' || (<StoryRule>line).kind === 'THEN'));    
+    }
+
+    // getRuleKindScopeForLine(line: number): MainRuleType | undefined {
+    //     const ruleLines = this.getElements<StoryRule>(0, line, true, 'RULE');
+    //     while(ruleLines.length){
+    //         const ruleLine = ruleLines.pop();
+    //         if (ruleLine.kind === 'GIVEN' || ruleLine.kind === 'WHEN' || ruleLine.kind === 'THEN'){
+    //             return ruleLine.kind;
+    //         }
+    //     }
+    //     return undefined;
+    // }
 
     debugString(){
         let debugTree = 'DebugTree:\r\n';

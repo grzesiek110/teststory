@@ -1,4 +1,4 @@
-import { StoryExpression } from "../domains/story/grammar/model";
+import { StoryExpression } from "../story/grammar/model";
 
 export type VariableType = 'VALUE' | 'ELEMENT' | 'TABLE'; 
 
@@ -8,7 +8,7 @@ export interface VariableDefinition {
     type: VariableType;
 } 
 
-export class VariablesService {
+export class AvailableVariablesService {
 
     getAvailableVariables(): VariableDefinition[]{
         return [

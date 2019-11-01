@@ -1,8 +1,13 @@
 import * as vs from "vscode";
-import { expressionsService, RuleDefinition, RuleExpression } from "../../../../../services";
+
 import { ExpressionContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
 import { findRangeToReplace } from "./utils";
+import { getAvailableRulesService, getStoryLanguageSupport } from "../../../../../extension";
+import { RuleDefinition  } from "../../../../rules/grammar/model/rule-definition";
+import { StoryRule } from "../../../grammar/model";
+import { MainRuleType } from "../../../../../shared/common.model";
+
 
 
 
@@ -10,16 +15,20 @@ export class ExpressionItemsProvider implements CompletionItemsProvider {
 
     constructor(private ctx: ExpressionContext){}
     
-    provideCompletionItems(_document: vs.TextDocument, _position: vs.Position): vs.CompletionItem[] {        
-        const availableRules = expressionsService.getAvailableRules();
-        const items = availableRules.map(rule => this.createCompletionItem(rule));
-
-        return items;
+    provideCompletionItems(document: vs.TextDocument, position: vs.Position): vs.CompletionItem[] {        
+        
+        const storyModel = getStoryLanguageSupport().getModel(document.uri);
+        const nearestRuleAbove = <StoryRule>storyModel.getNearestScopeElementAbove(position.line + 1);
+        if (nearestRuleAbove){
+            const availableRules = getAvailableRulesService().getAvailableRules(nearestRuleAbove.kind as MainRuleType); // 'AND' is not scope line
+            return availableRules.map(rule => this.createCompletionItem(rule));
+        }
+        return [];
     }
 
     private createCompletionItem(rule: RuleDefinition): vs.CompletionItem {
 
-        const item = new vs.CompletionItem(rule.mask);
+        const item = new vs.CompletionItem(rule.expression);
         item.filterText = this.ctx.text;
         item.documentation = this.getDescription(rule);
         item.insertText = new vs.SnippetString(rule.snippet);
@@ -35,9 +44,9 @@ export class ExpressionItemsProvider implements CompletionItemsProvider {
         return item;
     }
 
-    private getDescription(rule: RuleExpression) {
+    private getDescription(rule: RuleDefinition) {
         return new vs.MarkdownString(
-            `#### ${rule.name} #### \r\n___\r\n${rule.description}\r\n___\r\n rule: ${rule.kind}`);
+            `${rule.description}\r\n___\r\n rule: ${rule.kind}`);
     }
 
 }

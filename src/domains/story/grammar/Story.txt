@@ -1,34 +1,21 @@
-  A tutuaj dodam jakiś tesk # plus komentarz
- Jakieś + nieznane ; || elementy ?>>
-feature :  Witaj przygodo! #koment
+Feature: Pierwsza historia wyprawy na księżyć 
+
+#
+### Story: You can describe your story here using markdown syntax ###
 
 
- 
-Scenario Outline: asd
-  When SO
+As a | I want to | So that      
+------- | ---------------- |  :--------
+user  | select some elements and click on buttons | I will be happy :)     
 
-Scenario: asd
-  When S
-
-
+#
+### Acceptance tests: ###
 
 
+Scenario: Apollo 11 ma przećwiczyć start rakiety nośnej
+
+  Given <accounts> text should equal "asd"
 
 
-
-
-
-I tu też
-    Given Open webpage <strona_logowania> # koment
-    when brzydko
-    given Zly 
-    And Wait for browser to show element < bledna nazwa zmiennej  element>
-  #  and Set something
-    and tomorrow
-
-    Then Click on element <element d <fg #komentarz 23
-    And Compare text from element <element> to "Jakis tekst
-    #then error #komentarz
-
-    When Open webpage " #
-    When   
+  And youre
+   

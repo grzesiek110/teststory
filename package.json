@@ -34,7 +34,7 @@
 					"TestStory rules"
 				],
 				"configuration": "./domains/rules/editor/rules.language-configuration.json"
-			}			
+			}
 		],
 		"grammars": [
 			{
@@ -46,8 +46,25 @@
 				"language": "rules",
 				"scopeName": "source.rules",
 				"path": "./src/domains/rules/editor/rules.tmLanguage.json"
-			}			
-		]
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "teststory-explorer",
+					"title": "TestStory",
+					"icon": "media/teststory.svg"
+				}
+			]
+		},
+		"views": {
+			"teststory-explorer": [
+				{
+					"id": "expressionsView",
+					"name": "Expressions"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -60,7 +77,8 @@
 	},
 	"dependencies": {
 		"antlr4": "4.7.2",
-		"antlr4ts": "0.5.0-alpha.3"
+		"antlr4ts": "0.5.0-alpha.3",
+		"lodash": "4.17.15"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -68,6 +86,7 @@
 		"@types/node": "^10.12.21",
 		"@types/vscode": "^1.38.0",
 		"@types/antlr4": "^4.7.0",
+		"@types/lodash": "4.14.108",
 		"antlr4ts-cli": "0.5.0-alpha.3",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",

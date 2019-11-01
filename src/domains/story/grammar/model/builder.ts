@@ -10,11 +10,9 @@ import { StoryExpression, StoryFeature, StoryRule, StoryScenario, StoryUnknown }
 import { StoryScenarioOutline } from './elements/story-scenario-outline';
 
 
-export function parseStoryModel(document: vscode.TextDocument): StoryModel {
-    const documentText = document.getText();
-    const psrserModel = parseDocument(documentText);
-
-    return buildStoryModel(psrserModel);
+export function parseStoryModel(uri: vscode.Uri, text: string): StoryModel {
+    const parserModel = parseDocument(text);
+    return buildStoryModel(uri, parserModel);
 }
 
 export function parseDocument(documentText: string) {
@@ -28,8 +26,9 @@ export function parseDocument(documentText: string) {
     return parser.model();
 }
 
-function buildStoryModel(ctx: ModelContext) {
-    const storyModelBuilder = new Builder();
+function buildStoryModel(uri: vscode.Uri, ctx: ModelContext) {
+    const model = new StoryModel(uri);
+    const storyModelBuilder = new Builder(model);
     ParseTreeWalker.DEFAULT.walk(storyModelBuilder as ParseTreeListener, ctx);
     const storyModel = storyModelBuilder.model;
     storyModel.setContext(ctx);
@@ -38,16 +37,13 @@ function buildStoryModel(ctx: ModelContext) {
 
 
 class Builder implements StoryListener {
-    model: StoryModel;
     activeSection: StorySection;
     activeScenario: StoryScenario;
     activeScenarioOuline: StoryScenarioOutline;
     activeRule: StoryRule;
     activeExpression: StoryExpression;
 
-    enterModel(_ctx: ModelContext){
-        this.model = new StoryModel();
-    }
+    constructor(public model: StoryModel){}
 
     enterUnknownLine(ctx: UnknownLineContext){
         const unknown = new StoryUnknown(ctx);
@@ -90,20 +86,23 @@ class Builder implements StoryListener {
 
 
     enterGiven(ctx: GivenContext){
-        const given = new StoryRule('GIVEN', ctx);
-        this.activeRule = given;
+        const rule = new StoryRule('GIVEN', ctx);
+        this.setActiveRule(rule);
     }
 
     enterWhen(ctx: WhenContext){
-        this.activeRule = new StoryRule('WHEN', ctx);
+        const rule = new StoryRule('WHEN', ctx);
+        this.setActiveRule(rule);
     }
 
     enterThen(ctx: ThenContext){
-        this.activeRule = new StoryRule('THEN', ctx);
+        const rule = new StoryRule('THEN', ctx);
+        this.setActiveRule(rule);
     }
 
     enterAnd(ctx: AndContext){
-        this.activeRule = new StoryRule('AND', ctx);
+        const rule = new StoryRule('AND', ctx);
+        this.setActiveRule(rule);
     }
 
     enterExpression(ctx: ExpressionContext){
@@ -127,8 +126,6 @@ class Builder implements StoryListener {
 
         this.activeRule.setExpression(this.activeExpression);
         this.activeExpression = undefined;
-
-        this.model.addRule(this.activeRule);
         this.activeRule = undefined;
     }
 
@@ -136,6 +133,12 @@ class Builder implements StoryListener {
         this.extendActiveScenarioToLine(ctx.start.line);
     }
 
+    private setActiveRule(rule: StoryRule) {
+        this.model.addRule(rule);
+        this.addRuleToActiveScenario(rule);
+        this.activeRule = rule;
+    }
+    
     private extendActiveScenarioToLine(line: number) {
         if (this.activeScenario) {
             this.activeScenario.setEndLine(line);
@@ -145,5 +148,13 @@ class Builder implements StoryListener {
         }
     }
 
+    private addRuleToActiveScenario(rule: StoryRule) {
+        if (this.activeScenario) {
+            this.activeScenario.addRule(rule);
+        }
+        if (this.activeScenarioOuline) {
+            this.activeScenarioOuline.addRule(rule);
+        }
+    }
 }
 

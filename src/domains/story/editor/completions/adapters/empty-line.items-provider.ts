@@ -1,10 +1,11 @@
-import * as vs from "vscode";
 import { ParserRuleContext } from "antlr4ts";
+import * as vs from "vscode";
 
 import { getStoryLanguageSupport } from "../../../../../extension";
-import { AndKeywordContext, FeatureKeywordContext, GivenKeywordContext, ScenarioKeywordContext, ScenarioOutlineKeywordContext, ThenKeywordContext, WhenKeywordContext } from "../../../grammar/parser/StoryParser";
+import { FeatureKeywordContext, GivenKeywordContext, ScenarioKeywordContext, ScenarioOutlineKeywordContext, ThenKeywordContext, WhenKeywordContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
 import { AbstractArrayTreeVisitor } from "./abstract-array-tree-visitior";
+
 
 
 
@@ -16,8 +17,8 @@ export class EmptyLineItemsProvider implements CompletionItemsProvider {
     
     provideCompletionItems(document: vs.TextDocument, position: vs.Position): vs.CompletionItem[] {
         const model = this.getDocumentModel(document);
-        const usedLine = model.getNearestElementAbove(position.line + 1, true);
-        return usedLine.getContext().accept(new EmptyLineContextProvider(this.emptyLineContent, position));
+        const nearestScope = model.getNearestScopeElementAbove(position.line + 1);
+        return nearestScope.getContext().accept(new EmptyLineContextProvider(this.emptyLineContent, position));
     }
 
     private getDocumentModel(document: vs.TextDocument) {
@@ -52,7 +53,6 @@ class EmptyLineContextProvider extends AbstractArrayTreeVisitor<vs.CompletionIte
         return [
             this.createRuleItem(this.emptyLine, ctx, this.position, 'Given'),
             this.createRuleItem(this.emptyLine, ctx, this.position, 'When'),
-            this.createRuleItem(this.emptyLine, ctx, this.position, 'And'),
             this.createRuleItem(this.emptyLine, ctx, this.position, 'Examples:')
         ];
     }
@@ -74,13 +74,9 @@ class EmptyLineContextProvider extends AbstractArrayTreeVisitor<vs.CompletionIte
 
     visitThenKeyword(ctx: ThenKeywordContext){
         return [
-            this.createRuleItem(this.emptyLine, ctx, this.position, 'And')
-        ];
-    }
-
-    visitAndKeyword(ctx: AndKeywordContext){
-        return [
-            this.createRuleItem(this.emptyLine, ctx, this.position, 'And')
+            this.createRuleItem(this.emptyLine, ctx, this.position, 'And'),
+            this.createRuleItem(this.emptyLine, ctx, this.position, 'Scenario:'),
+            this.createRuleItem(this.emptyLine, ctx, this.position, 'Scenario Outline:')
         ];
     }
 

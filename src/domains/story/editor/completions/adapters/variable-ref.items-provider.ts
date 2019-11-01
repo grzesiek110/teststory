@@ -1,8 +1,11 @@
 import { CompletionItem, CompletionItemKind, MarkdownString, Position, SnippetString, TextDocument } from "vscode";
-import { VariableDefinition, variablesService } from "../../../../../services";
+import { getAvailableVariablesService } from "../../../../../extension";
+import { VariableDefinition } from "../../../../variables/variables.service";
 import { VariableRefContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
 import { findRangeToReplace } from "./utils";
+
+
 
 
 export class VariableRefItemsProvider implements CompletionItemsProvider {
@@ -10,7 +13,7 @@ export class VariableRefItemsProvider implements CompletionItemsProvider {
     constructor(private ctx: VariableRefContext){}
     
     provideCompletionItems(_document: TextDocument, _position: Position): CompletionItem[] {        
-        return variablesService.getAvailableVariables().map(variable => this.mapAsCompletionItem(variable));
+        return getAvailableVariablesService().getAvailableVariables().map(variable => this.mapAsCompletionItem(variable));
     }
 
     private mapAsCompletionItem(variable: VariableDefinition): CompletionItem {
