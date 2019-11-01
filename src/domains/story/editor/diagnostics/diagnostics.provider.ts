@@ -18,9 +18,9 @@ export function createDiagnosticsProvider(storyLanguageSupport: StoryLanguageSup
 	const diagnostics = vscode.languages.createDiagnosticCollection("teststory-story");
 
 	storyLanguageSupport.registerModelChangeListener({
-		modelChanged(uri, model){
-			updateDiagnostics(uri, model, diagnostics);
-		}
+		modelAdded: (uri, model) => updateDiagnostics(uri, model, diagnostics),
+		modelChanged: (uri, _previous, current) => updateDiagnostics(uri, current, diagnostics),
+		modelRemoved: (uri, _previous) => removeDiagnostics(uri, diagnostics)
 	});
 }
 
@@ -32,3 +32,6 @@ function updateDiagnostics(uri: vscode.Uri, model: StoryModel, collection: vscod
 	collection.set(uri, diagnostics);	
 }
 
+function removeDiagnostics(uri: vscode.Uri, collection: vscode.DiagnosticCollection) {
+	collection.delete(uri);
+}

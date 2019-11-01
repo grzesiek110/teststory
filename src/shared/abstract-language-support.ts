@@ -7,9 +7,9 @@ export interface ModelWithUri {
 }
 
 export interface ModelChangeListener<T> {
-    modelAdded?(uri: vs.Uri, previous: T): void;
-    modelRemoved?(uri: vs.Uri, model: T): void;
-    modelChanged?(uri: vs.Uri, previous: T, current: T): void;
+    modelAdded(uri: vs.Uri, model: T): void;
+    modelRemoved(uri: vs.Uri, model: T): void;
+    modelChanged(uri: vs.Uri, previous: T, current: T): void;
 }
 
 interface ModelsForUri<T> {
