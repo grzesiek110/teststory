@@ -13,7 +13,7 @@ emptyLine:
   WS? EOL;
 
 sectionLine:
-  (GIVEN | WHEN | THEN) EOL;
+  WS? (GIVEN | WHEN | THEN) ~EOL*;
 
 ruleDefinition:
     commentLine*
@@ -49,9 +49,9 @@ endOfLine:
 
 // Lexer rules
 
-GIVEN: 'Given:';
-WHEN:  'When:';
-THEN: 'Then:';
+GIVEN: 'Given:' | 'given:';
+WHEN:  'When:' | 'when:';
+THEN: 'Then:' | 'then:';
 
 VALUE_REFERENCE: '<value>';
 CONSTANT_VALUE: '"value"';

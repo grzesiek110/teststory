@@ -63,8 +63,8 @@ export class AvailableRulesService {
 
     private removeAllRulesFromModel(rulesFile: RulesFile, event: boolean){
         this.availableGivenRules = _.difference(this.availableGivenRules, rulesFile.getDefinitions('GIVEN'));
-        this.availableWhenRules = _.difference(this.availableGivenRules, rulesFile.getDefinitions('WHEN'));
-        this.availableThenRules = _.difference(this.availableGivenRules, rulesFile.getDefinitions('THEN'));
+        this.availableWhenRules = _.difference(this.availableWhenRules, rulesFile.getDefinitions('WHEN'));
+        this.availableThenRules = _.difference(this.availableThenRules, rulesFile.getDefinitions('THEN'));
 
         if (event){
             this.eventAvailableRulesChange();

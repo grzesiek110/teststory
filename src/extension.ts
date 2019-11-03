@@ -48,10 +48,10 @@ export function activate(context: vscode.ExtensionContext) {
 		return new Promise(async (resolve, reject) => {
 			logToOutput('Test story initialization...');
 
-			rulesLanguageSupport.initialize(context);
+			await rulesLanguageSupport.initialize(context);
 			showProgressWithCancel(30, progress, token, reject);
 
-			storyLanguageSupport.initialize(context);
+			await storyLanguageSupport.initialize(context);
 			showProgressWithCancel(30, progress, token, reject);
 	
 			createDiagnosticsProvider(storyLanguageSupport);	
@@ -59,7 +59,8 @@ export function activate(context: vscode.ExtensionContext) {
 			showProgressWithCancel(10, progress, token, reject);
 
 			
-			const _view = new ExpressionsView(context);
+			// tslint:disable-next-line: no-unused-expression
+			new ExpressionsView(context);
 			showProgressWithCancel(10, progress, token, reject);
 			
 			logToOutput('Test story ready!');

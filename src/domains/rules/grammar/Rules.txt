@@ -1,6 +1,5 @@
-Given:
+ Given: 
     
-    sdsd
 
     # Otwiera wybraną stronę w przeglądarce
     Open webpage "value"

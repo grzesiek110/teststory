@@ -1,6 +1,7 @@
 import * as vs from 'vscode';
 import * as path from 'path';
 import { TextDecoder } from 'util';
+import { logToOutput } from '../extension';
 
 export interface ModelWithUri {
     uri: vs.Uri;
@@ -25,11 +26,9 @@ export abstract class AbstractLangageSupport<T extends ModelWithUri> {
 
     abstract parseContent(documentUri: vs.Uri, content: string): T;
 
-
-    async initialize(context: vs.ExtensionContext){
-        this.readAllFilesWithModels();
-        this.registerListeners(context);
-        vs.workspace.textDocuments.forEach(document => this.activateEditor(document));
+    async initialize(_context: vs.ExtensionContext){
+        await this.createModelsForAllModelFiles();
+        this.registerListeners();
     }
 
     registerModelChangeListener(listener: ModelChangeListener<T>){
@@ -55,14 +54,22 @@ export abstract class AbstractLangageSupport<T extends ModelWithUri> {
         }
     }
 
-    private registerListeners(context: vs.ExtensionContext) {
+    private async createModelsForAllModelFiles() {
+        const modelUris = await this.findAllFilesWithModels();
+        modelUris.forEach(uri => this.updateModel(uri));
+    }
+
+    private registerListeners() {
         vs.workspace.onDidChangeTextDocument(changeEvent => this.textDocumentChange(changeEvent));
         vs.workspace.onDidOpenTextDocument(document => this.textDocumentOpen(document));        
         
-        const fileSystemWatcher = vs.workspace.createFileSystemWatcher(`/**/*.${this.fileExtension}`);
-        fileSystemWatcher.onDidCreate(uri => this.createNewRulesFile(uri));
-        fileSystemWatcher.onDidDelete(uri => this.deleteRulesFile(uri));
-        fileSystemWatcher.onDidChange(uri => this.modifyRulesFile(uri));
+        for (let workspace of vs.workspace.workspaceFolders){
+            const filesPattern = new vs.RelativePattern(workspace, `**/*.${this.fileExtension}`);
+            const fileSystemWatcher = vs.workspace.createFileSystemWatcher(filesPattern);
+            fileSystemWatcher.onDidCreate(uri => this.createNewRulesFile(uri));
+            fileSystemWatcher.onDidDelete(uri => this.deleteRulesFile(uri));
+            fileSystemWatcher.onDidChange(uri => this.modifyRulesFile(uri));    
+        }
     }
     
     private createNewRulesFile(uri: vs.Uri): any {
@@ -77,32 +84,48 @@ export abstract class AbstractLangageSupport<T extends ModelWithUri> {
         this.updateModel(uri);
     }
 
-    private activateEditor(document: vs.TextDocument) {
-        if (this.isThisCorrectDocument(document)){
-            this.readModelFromOpenEditor(document);
-        }
-    }
-
     private textDocumentChange(event: vs.TextDocumentChangeEvent): any {
         const document = event.document;
-        if (this.isThisCorrectDocument(document)){
+        if (this.isModelFile(document.uri)){
             this.readModelFromOpenEditor(document);
         }        
     }
 
     private textDocumentOpen(document: vs.TextDocument): any {
-        if (this.isThisCorrectDocument(document)){
+        if (this.isModelFile(document.uri)){
             this.readModelFromOpenEditor(document);
         }        
     }
 
-    private isThisCorrectDocument(document: vs.TextDocument) {
-        return document && path.extname(document.uri.fsPath) === `.${this.fileExtension}`;
+    private isModelFile(uri: vs.Uri) {
+        return path.extname(uri.fsPath) === `.${this.fileExtension}`;
     }
 
-    private async readAllFilesWithModels(){
-        const files = await vs.workspace.findFiles(`/**​/*.${this.fileExtension}`);
-        files.forEach(uri => this.readModelFromFile(uri));
+    private async findAllFilesWithModels() {
+        const sortedUris: vs.Uri[] = [];
+        const uniqueUriSet: Set<string> = new Set();
+        
+        // all files in opened editors
+        vs.workspace.textDocuments.forEach(document => {
+            if (document.uri.scheme === 'file' && this.isModelFile(document.uri) && !uniqueUriSet.has(document.uri.path)){
+                uniqueUriSet.add(document.uri.path);
+                sortedUris.push(document.uri);
+            }
+        });
+        
+        // all other files        
+        for (let workspace of vs.workspace.workspaceFolders){
+            const filesPattern = new vs.RelativePattern(workspace, `**/*.${this.fileExtension}`);
+            const files = await vs.workspace.findFiles(filesPattern);
+            files.forEach(uri => {
+                if (uri.scheme === 'file' && !uniqueUriSet.has(uri.path)){
+                    uniqueUriSet.add(uri.path);        
+                    sortedUris.push(uri);
+                }
+            });
+        }
+        
+        return sortedUris;
     }
 
     private readModelFromOpenEditor(editorDocument: vs.TextDocument){
@@ -116,8 +139,6 @@ export abstract class AbstractLangageSupport<T extends ModelWithUri> {
     }
 
     private parseContentAndUpdateModel(documentUri: vs.Uri, content: string) {
-
-        
         const current = this.parseContent(documentUri, content);
         this.updateModelStructure(current);
     }

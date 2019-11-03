@@ -15,7 +15,7 @@ export class StoryLanguageSupport extends AbstractLangageSupport<StoryModel> {
     }
 
     async initialize(context: vs.ExtensionContext){
-        super.initialize(context);
+        await super.initialize(context);
 
         getAvailableRulesService().registerAvailableRulesChangeListener({
             availableRulesChanged: () => this.updateAllModels()
