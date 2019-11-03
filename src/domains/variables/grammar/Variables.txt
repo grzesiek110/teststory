@@ -1,11 +1,8 @@
 
-# Pobranie listy klientów
-loadCustomerButton : Element
+### Show welcome alert button ###
+This is button resposible to show welcome alert 
+Var: showWelcomeButton : Element
 
-# Kliknięcie pokazuje sekcję danych klienta
-# na jakimś wymyślonym ekranie
-showCustomerInfoSection : Element
-
-# Zatwierdza formularz z danymi klienta
-submitButton : Element
-
+### Another element ###
+Some other element
+Var: someOtherElement: Element

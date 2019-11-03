@@ -41,7 +41,26 @@
 			"startRule": "model",
 			"printParseTree": true,
 			"visualParseTree": true
-		}
-
+		},
+		{
+			"name": "Debug 'Rule' grammar",
+			"type": "antlr-debug",
+			"request": "launch",
+			"input": "src/domains/rules/grammar/Rules.txt",
+			"grammar": "src/domains/rules/grammar/Rules.g4",
+			"startRule": "model",
+			"printParseTree": true,
+			"visualParseTree": true
+		},
+		{
+			"name": "Debug 'Variables' grammar",
+			"type": "antlr-debug",
+			"request": "launch",
+			"input": "src/domains/variables/grammar/Variables.txt",
+			"grammar": "src/domains/variables/grammar/Variables.g4",
+			"startRule": "model",
+			"printParseTree": true,
+			"visualParseTree": true
+		}		
 	]
 }

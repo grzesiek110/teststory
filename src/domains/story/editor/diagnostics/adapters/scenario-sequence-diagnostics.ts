@@ -1,6 +1,7 @@
 import { TextDocument, Diagnostic, Range, Position, DiagnosticSeverity, Uri } from 'vscode';
-import { StoryModel, StoryScenario, RuleType, StoryRule } from '../../../grammar/model';
+import { StoryModel, StoryScenario, StoryRule } from '../../../grammar/model';
 import { DiagnosticsProviderRule } from '../diagnostics.model';
+import { ExtendedRuleType } from '../../../../../shared/common.model';
 
 export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
     
@@ -11,7 +12,7 @@ export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
     private checkSequenceOfRules(diagnostics: Diagnostic[], scenario: StoryScenario): void {
         const rules = scenario.getRules();
 
-        let lastRuleType: RuleType;
+        let lastRuleType: ExtendedRuleType;
         for (let rule of rules){
             if (this.ruleTypeInNotAllowed(lastRuleType, rule.kind)){
                 this.errorRulesSequence(diagnostics, rule, lastRuleType);
@@ -22,7 +23,7 @@ export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
         }
 
     }
-    private ruleTypeInNotAllowed(lastType: RuleType, type: RuleType) {
+    private ruleTypeInNotAllowed(lastType: ExtendedRuleType, type: ExtendedRuleType) {
         switch(type){
             case 'GIVEN':
                 return lastType !== undefined && lastType !== 'GIVEN';
@@ -35,7 +36,7 @@ export class ScenarioSequenceDiagnostics implements DiagnosticsProviderRule{
         }
     }
 
-    private errorRulesSequence(diagnostics: Diagnostic[], rule: StoryRule, lastRuleType: RuleType) {
+    private errorRulesSequence(diagnostics: Diagnostic[], rule: StoryRule, lastRuleType: ExtendedRuleType) {
         
         const line = rule.ctx.start.line -1;
         const startIndex = rule.ctx.start.charPositionInLine;

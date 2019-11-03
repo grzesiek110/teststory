@@ -1,34 +1,24 @@
-  A tutuaj dodam jakiś tesk # plus komentarz
- Jakieś + nieznane ; || elementy ?>>
-feature :  Witaj przygodo! #koment
+Feature: First test story
+
+#
+### Story: You can describe your story here using markdown syntax ###
 
 
- 
-Scenario Outline: asd
-  When SO
+As a | I want to | So that      
+------- | ---------------- |  :--------
+user  | click on button on welcome page | To show welcome alert :)     
 
-Scenario: asd
-  When S
-
-
+#
+### Acceptance tests: ###
 
 
+Scenario: I want select some element on welcome page
+  Given Open webpage "/welcome"
+    And Wait for "1" seconds
+   
+  When I want click on element <showWelcomeButton>
 
-
-
-
-
-I tu też
-    Given Open webpage <strona_logowania> # koment
-    when brzydko
-    given Zly 
-    And Wait for browser to show element < bledna nazwa zmiennej  element>
-  #  and Set something
-    and tomorrow
-
-    Then Click on element <element d <fg #komentarz 23
-    And Compare text from element <element> to "Jakis tekst
-    #then error #komentarz
-
-    When Open webpage " #
-    When   
+  Then Browser should display alert with "Hello TestStory DSL!" value
+   
+  
+  

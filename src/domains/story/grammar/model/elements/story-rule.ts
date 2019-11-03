@@ -1,10 +1,9 @@
-import { TerminalNode } from 'antlr4ts/tree';
-
+import { ParserRuleContext } from 'antlr4ts';
+import { AndContext, GivenContext, ThenContext, WhenContext } from '../../parser/StoryParser';
 import { StoryLineElement, StructureElementType } from './story';
 import { StoryExpression } from './story-expresion';
-import { GivenContext, WhenContext, ThenContext, AndContext, GivenKeywordContext, StoryParser } from '../../parser/StoryParser';
-import { StoryLexer } from '../../parser/StoryLexer';
-import { ParserRuleContext } from 'antlr4ts';
+import { ExtendedRuleType } from '../../../../../shared/common.model';
+
 
 export type RuleContext = 
     GivenContext | 
@@ -12,16 +11,11 @@ export type RuleContext =
     ThenContext | 
     AndContext;
 
-export type RuleType = 
-    'GIVEN' | 
-    'WHEN' | 
-    'THEN' | 
-    'AND';
 
 export class StoryRule implements StoryLineElement{
     expression: StoryExpression;
 
-    constructor(public kind: RuleType, public ctx: Readonly<RuleContext>){}
+    constructor(public kind: ExtendedRuleType, public ctx: Readonly<RuleContext>){}
 
     getContext(): RuleContext {
         return this.ctx;

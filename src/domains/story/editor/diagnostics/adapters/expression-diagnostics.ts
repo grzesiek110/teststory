@@ -1,15 +1,17 @@
-import { Diagnostic, DiagnosticSeverity, Position, Range, TextDocument, Uri } from 'vscode';
-
-import { StoryExpression, StoryModel, StoryRule, RuleType } from '../../../grammar/model';
-import { expressionsService } from '../../../../../services';
+import { Diagnostic, DiagnosticSeverity, Position, Range, Uri } from 'vscode';
+import { getAvailableRulesService } from '../../../../../extension';
+import { StoryExpression, StoryModel, StoryRule } from '../../../grammar/model';
 import { DiagnosticsProviderRule } from '../diagnostics.model';
+import { ExtendedRuleType } from '../../../../../shared/common.model';
+
+
 
 export class ExpressionDiagnostics implements DiagnosticsProviderRule {
     
     createDiagnostics(_uri: Uri, diagnostics: Diagnostic[], model: StoryModel) {
         const rules = model.getElements<StoryRule>(0, undefined, true, 'RULE');
         
-        let lastMainExpressionKind: RuleType = 'GIVEN';
+        let lastMainExpressionKind: ExtendedRuleType = 'GIVEN';
         for (let rule of rules){
             
             let expressionKind = rule.kind;
@@ -19,13 +21,9 @@ export class ExpressionDiagnostics implements DiagnosticsProviderRule {
                 lastMainExpressionKind = expressionKind;
             }
 
-            this.checkExpression(diagnostics, expressionKind, rule.expression);
-        }
-    }
-
-    private checkExpression(diagnostics: Diagnostic[], ruleKind: RuleType, expression: StoryExpression): void {
-        if (!expressionsService.isValid(ruleKind, expression.mask)) {
-            this.markWrongExpression(diagnostics, expression);
+            if (!getAvailableRulesService().isValid(expressionKind, rule.expression.mask)) {
+                this.markWrongExpression(diagnostics, rule.expression);
+            }
         }
     }
 

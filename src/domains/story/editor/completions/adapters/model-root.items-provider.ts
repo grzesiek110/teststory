@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { ParserRuleContext } from 'antlr4ts';
 import { StoryModel } from '../../../grammar/model';
 
-import { ExpressionContext, ExpressionTextContext, LineContext, UnknownLineContext, VariableRefContext } from '../../../grammar/parser/StoryParser';
+import { ExpressionContext, ExpressionTextContext, LineContext, UnknownLineContext, VariableRefContext, GivenContext } from '../../../grammar/parser/StoryParser';
 import { CompletionItemsProvider } from '../completions.model';
 import { AbstractArrayTreeVisitor } from './abstract-array-tree-visitior';
 import * as snippets from './completions.snippets';
@@ -99,7 +99,7 @@ class FindCompletionItemsProvider extends AbstractArrayTreeVisitor<vscode.Comple
                 .provideCompletionItems(this.document, this.position);
         }
     }
-    
+
     visitExpression(ctx: ExpressionContext){
         if (this.containsPosition(ctx) && this.expressionIsEmpty(ctx)){
             return new ExpressionItemsProvider(ctx)

@@ -1,5 +1,5 @@
 
-import { StorySection, StoryLineElement, StructureElementType } from './story';
+import { StorySection, StoryLineElement, StructureElementType, StoryModel } from './story';
 import { ScenarioOutlineContext } from '../../parser/StoryParser';
 import { StoryRule } from './story-rule';
 
@@ -9,7 +9,7 @@ export class StoryScenarioOutline implements StorySection, StoryLineElement {
     private endLine: number;
     private rules: StoryRule[] = [];
 
-    constructor(public ctx: ScenarioOutlineContext){}
+    constructor(public model: StoryModel, public ctx: ScenarioOutlineContext){}
 
     getContext(): ScenarioOutlineContext {
         return this.ctx;

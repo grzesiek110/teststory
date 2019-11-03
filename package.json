@@ -1,8 +1,8 @@
 {
-	"name": "grzesiek110.story",
+	"name": "g110.story",
 	"displayName": "TestStory",
 	"description": "TestStory is editior for scrum stories with acceptance criteria as e2e tests",
-	"version": "0.0.1",
+	"version": "0.5.0",
 	"engines": {
 		"vscode": "^1.38.0"
 	},
@@ -24,6 +24,26 @@
 					"TestStory story"
 				],
 				"configuration": "./domains/story/editor/story.language-configuration.json"
+			},
+			{
+				"id": "rules",
+				"extensions": [
+					".rules"
+				],
+				"aliases": [
+					"TestStory rules"
+				],
+				"configuration": "./domains/rules/editor/rules.language-configuration.json"
+			},
+			{
+				"id": "variables",
+				"extensions": [
+					".variables"
+				],
+				"aliases": [
+					"TestStory variables"
+				],
+				"configuration": "./domains/variables/editor/variables.language-configuration.json"
 			}
 		],
 		"grammars": [
@@ -31,8 +51,43 @@
 				"language": "story",
 				"scopeName": "source.story",
 				"path": "./src/domains/story/editor/story.tmLanguage.json"
+			},
+			{
+				"language": "rules",
+				"scopeName": "source.rules",
+				"path": "./src/domains/rules/editor/rules.tmLanguage.json"
+			},
+			{
+				"language": "variables",
+				"scopeName": "source.variables",
+				"path": "./src/domains/variables/editor/variables.tmLanguage.json"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "teststory-explorer",
+					"title": "TestStory",
+					"icon": "media/teststory.svg"
+				}
+			]
+		},
+		"views": {
+			"teststory-explorer": [
+				{
+					"id": "scenariosView",
+					"name": "Scenarios"
+				},
+				{
+					"id": "expressionsView",
+					"name": "Expressions"
+				},
+				{
+					"id": "variablesView",
+					"name": "Variables"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -40,11 +95,14 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"grammar-story": "antlr4ts -o src/domains/story/grammar/parser -visitor ./src/domains/story/grammar/Story.g4"
+		"grammar-story": "antlr4ts -o src/domains/story/grammar/parser -visitor ./src/domains/story/grammar/Story.g4",
+		"grammar-rules": "antlr4ts -o src/domains/rules/grammar/parser -visitor ./src/domains/rules/grammar/Rules.g4",
+		"grammar-variables": "antlr4ts -o src/domains/variables/grammar/parser -visitor ./src/domains/variables/grammar/Variables.g4"
 	},
 	"dependencies": {
 		"antlr4": "4.7.2",
-		"antlr4ts": "0.5.0-alpha.3"
+		"antlr4ts": "0.5.0-alpha.3",
+		"lodash": "4.17.15"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
@@ -52,6 +110,7 @@
 		"@types/node": "^10.12.21",
 		"@types/vscode": "^1.38.0",
 		"@types/antlr4": "^4.7.0",
+		"@types/lodash": "4.14.108",
 		"antlr4ts-cli": "0.5.0-alpha.3",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",

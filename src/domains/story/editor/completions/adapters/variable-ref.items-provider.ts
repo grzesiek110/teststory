@@ -1,8 +1,10 @@
 import { CompletionItem, CompletionItemKind, MarkdownString, Position, SnippetString, TextDocument } from "vscode";
-import { VariableDefinition, variablesService } from "../../../../../services";
+import { getAvailableVariablesService } from "../../../../../extension";
 import { VariableRefContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
 import { findRangeToReplace } from "./utils";
+import { VariableDefinition } from "../../../../variables/grammar/model/variable-definition";
+
 
 
 export class VariableRefItemsProvider implements CompletionItemsProvider {
@@ -10,12 +12,12 @@ export class VariableRefItemsProvider implements CompletionItemsProvider {
     constructor(private ctx: VariableRefContext){}
     
     provideCompletionItems(_document: TextDocument, _position: Position): CompletionItem[] {        
-        return variablesService.getAvailableVariables().map(variable => this.mapAsCompletionItem(variable));
+        return getAvailableVariablesService().getAvailableVariables().map(variable => this.mapAsCompletionItem(variable));
     }
 
     private mapAsCompletionItem(variable: VariableDefinition): CompletionItem {
 
-        const item = new CompletionItem(variable.name);
+        const item = new CompletionItem(variable.variableName);
         item.filterText = this.ctx.text;
         item.insertText = this.getTextToInsert(variable);
         item.documentation = this.getDescription(variable);
@@ -26,11 +28,10 @@ export class VariableRefItemsProvider implements CompletionItemsProvider {
     }
 
     private getTextToInsert(variable: VariableDefinition): string | SnippetString {
-        return `<${variable.name}>`;
+        return `<${variable.variableName}>`;
     }
 
     private getDescription(variable: VariableDefinition) {
-        return new MarkdownString(
-            `#### ${variable.name} #### \r\n___\r\n${variable.description}\r\n___\r\n type: ${variable.type}`);
+        return new MarkdownString(variable.description);
     }
 }

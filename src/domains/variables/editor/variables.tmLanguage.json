@@ -1,0 +1,26 @@
+{
+    "scopeName": "source.variables",
+    "patterns": [
+        { "include": "#expression" }
+    ],
+    "repository": {
+      "expression": {
+        "patterns": [
+            { "include": "#variable-line" },
+            { "include": "#comment" }
+        ]
+      },
+      "variable-line": {
+        "begin": "^\\s*(Var:|var:)\\s+([^\\s]*)",
+        "captures": {
+          "1": {"name": "keyword"},
+          "2": {"name": "variable"}
+        },
+        "end": "$"
+      },
+      "comment": {
+        "match": ".*",
+        "name": "comment"
+      }
+    }
+}
