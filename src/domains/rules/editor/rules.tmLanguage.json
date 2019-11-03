@@ -9,26 +9,32 @@
             { "include": "#given" },
             { "include": "#when" },
             { "include": "#then" },
-            { "include": "#comment" },
-            { "include": "#variable-reference" },
-            { "include": "#constant" }
+            { "include": "#rule-line" },
+            { "include": "#comment" }
         ]
       },
       "given": {
-        "match": "^\\s*Given:",
+        "match": "^\\s*(Given:|given:)",
         "name": "keyword.control"
       },
       "when": {
-        "match": "^\\s*When:",
+        "match": "^\\s*(When:|when:)",
         "name": "keyword.control"
       },      
       "then": {
-        "match": "^\\s*Then:",
+        "match": "^\\s*(Then:|then:)",
         "name": "keyword.control"
-      },        
-      "comment": {
-        "match": "#.*",
-        "name": "comment"
+      },
+      "rule-line": {
+        "begin": "^\\s*(Rule:|rule:)\\s+",
+        "captures": {
+          "1": {"name": "keyword"}
+        },
+        "end": "$",
+        "patterns": [
+          { "include": "#variable-reference" },
+          { "include": "#constant" }          
+        ]
       },
       "variable-reference": {
         "match": "<[^>]*>?",
@@ -36,7 +42,11 @@
       },
       "constant": {
         "match": "\"[^\"]*\"?",
-        "name": "entity.name.function"
-      }      
+        "name": "string.quoted.single"
+      },     
+      "comment": {
+        "match": ".*",
+        "name": "comment"
+      }
     }
 }

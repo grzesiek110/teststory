@@ -6,7 +6,7 @@ model:
   line*;
 
 line: 
-  (sectionLine | emptyLine | ruleDefinition | unknownLine );
+  (sectionLine | emptyLine | ruleDefinition | commentLine | emptyLine );
 
 
 emptyLine:
@@ -15,24 +15,18 @@ emptyLine:
 sectionLine:
   WS? (GIVEN | WHEN | THEN) ~EOL*;
 
-ruleDefinition:
+ruleDefinition: 
     commentLine*
     ruleLine;        
 
-unknownLine:
-    WS? ~(GIVEN | WHEN | THEN |COMMENT_SYMBOL) ~EOL*;
-
 commentLine:
-  commentSymbol commentText endOfLine;
-
-commentSymbol:
-  WS? COMMENT_SYMBOL WS?;
-
-ruleLine:
-  WS? expression endOfLine;
+  WS? commentText endOfLine;
 
 commentText:
-  ~EOL+;
+  ~(RULE | GIVEN | WHEN | THEN | WS | EOL)+ ~EOL*;
+
+ruleLine:
+  WS? RULE expression endOfLine;
 
 expression:
   ( expressionText | VALUE_REFERENCE | CONSTANT_VALUE )+
@@ -52,6 +46,7 @@ endOfLine:
 GIVEN: 'Given:' | 'given:';
 WHEN:  'When:' | 'when:';
 THEN: 'Then:' | 'then:';
+RULE: 'Rule:' | 'rule:';
 
 VALUE_REFERENCE: '<value>';
 CONSTANT_VALUE: '"value"';
@@ -69,7 +64,7 @@ fragment SPECIAL_CHARACTER:
 fragment NUMBER: 
   [0-9]+;
 
-WORD: ( ENG_LETTER | POLISH_LETTER | NUMBER | SPECIAL_CHARACTER )+;
+WORD: ( ENG_LETTER | POLISH_LETTER | NUMBER )+;
 
 
 WS: [ \t]+;
