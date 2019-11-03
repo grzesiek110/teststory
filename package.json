@@ -1,14 +1,31 @@
 {
-	"name": "g110.story",
+	"name": "teststory",
 	"displayName": "TestStory",
+	"publisher": "g110",
 	"description": "TestStory is editior for scrum stories with acceptance criteria as e2e tests",
 	"version": "0.5.0",
+	"author": {
+		"name": "Grzegorz Białek",
+		"url": "https://www.linkedin.com/in/gbialek/"
+	},
+	"keywords": [
+		"cucumber",
+		"e2e-tests",
+		"domain-specific-language",
+		"scrum",
+		"tests"
+	],
+	"repository": {
+		"url": "https://github.com/grzesiek110/teststory"
+	},
 	"engines": {
 		"vscode": "^1.38.0"
 	},
 	"categories": [
-		"Other"
+		"Programming Languages"
 	],
+	"preview": true,
+	"icon": "media/teststory.png",
 	"activationEvents": [
 		"*"
 	],
