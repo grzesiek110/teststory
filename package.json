@@ -34,7 +34,17 @@
 					"TestStory rules"
 				],
 				"configuration": "./domains/rules/editor/rules.language-configuration.json"
-			}
+			},
+			{
+				"id": "variables",
+				"extensions": [
+					".variables"
+				],
+				"aliases": [
+					"TestStory variables"
+				],
+				"configuration": "./domains/variables/editor/variables.language-configuration.json"
+			}			
 		],
 		"grammars": [
 			{
@@ -46,7 +56,12 @@
 				"language": "rules",
 				"scopeName": "source.rules",
 				"path": "./src/domains/rules/editor/rules.tmLanguage.json"
-			}
+			},
+			{
+				"language": "variables",
+				"scopeName": "source.variables",
+				"path": "./src/domains/variables/editor/variables.tmLanguage.json"
+			}			
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -60,8 +75,16 @@
 		"views": {
 			"teststory-explorer": [
 				{
+					"id": "scenariosView",
+					"name": "Scenarios"
+				},
+				{
 					"id": "expressionsView",
 					"name": "Expressions"
+				},
+				{
+					"id": "variablesView",
+					"name": "Variables"
 				}
 			]
 		}
@@ -73,7 +96,8 @@
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
 		"grammar-story": "antlr4ts -o src/domains/story/grammar/parser -visitor ./src/domains/story/grammar/Story.g4",
-		"grammar-rules": "antlr4ts -o src/domains/rules/grammar/parser -visitor ./src/domains/rules/grammar/Rules.g4"
+		"grammar-rules": "antlr4ts -o src/domains/rules/grammar/parser -visitor ./src/domains/rules/grammar/Rules.g4",
+		"grammar-variables": "antlr4ts -o src/domains/variables/grammar/parser -visitor ./src/domains/variables/grammar/Variables.g4"
 	},
 	"dependencies": {
 		"antlr4": "4.7.2",

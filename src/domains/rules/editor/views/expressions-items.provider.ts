@@ -21,7 +21,7 @@ type TreeRoots = {
     [key in MainRuleType]: RootTreeItem;
 };
 
-export class ExpressionsItems implements TreeDataProvider<ExpressionTreeItem> {
+export class ExpressionsItemsProvider implements TreeDataProvider<ExpressionTreeItem> {
 	private _onDidChangeTreeData: EventEmitter<ExpressionTreeItem> = new EventEmitter<ExpressionTreeItem>();
     readonly onDidChangeTreeData: Event<ExpressionTreeItem> = this._onDidChangeTreeData.event;
     

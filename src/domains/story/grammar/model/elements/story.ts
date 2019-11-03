@@ -81,6 +81,10 @@ export class StoryModel {
         return this.scenarios;
     }
 
+    getScenariosOutline(): Readonly<StoryScenarioOutline[]>{
+        return this.scenariosOutline;
+    }
+
     addRule(rule: StoryRule){
         this.addStructureElement(rule.getLine(), rule);
     }

@@ -1,14 +1,37 @@
-  When:
-
-    A to jest kolejna reguła
-    Rule: Reguła druga
-
-    To jest opis reguły trzeciej
- 
-    sad Rule: który ma dwie linia
-    Albo tylko jedną
-    Rule: Chciałbym iść na lody w <dzien tygodnia> lub <inny dzień tygodnia> 
+Given:
     
-    iepoprawny
-Rule: sd
-  
+    ### Open page in browser ###
+    Jako parametr należy podać adres strony która ma zostać otworzona przeglądarce
+    Rule: Open webpage "URL"
+
+    ### Wait for browser ###
+    Czeka kilka sekund dając przeglądarce czas na wczytanie wartości
+    Rule: Wait for "number" seconds
+
+    ### Simply test rule ###
+    Rule: Simple rule "value"
+
+
+When:
+
+    ### Click on selected element ###
+    Klika w wybrany element na stronie. Jeżeli element nie istnieje to zostanie zgłoszony wyjątek
+    Rule: I want click on element <variable>
+
+    ### Click on selected element inside table###
+    Klika w wybraną element w tabeli. Wiersz podajemy na zasadzie:
+    <nazwa-tabeli:nazwa-kolumny:numer-wiersza>
+    Rule: I want click on table cell <table>
+
+
+
+Then:
+
+    ### Check element text ###
+    Check if element text is equal to some value
+    Rule: <variable> text should equal "value"
+
+
+    ### Wait for alert message ###
+    This rule wait for alert message and check its value
+    Rule: Browser should display alert with "value" value

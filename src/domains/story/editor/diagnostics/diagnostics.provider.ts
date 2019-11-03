@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { DiagnosticsProviderRule } from './diagnostics.model';
-import { ExpressionDiagnostics, ScenarioSequenceDiagnostics, UnknownLinesDiagnostics } from './adapters';
+import { ExpressionDiagnostics, ScenarioSequenceDiagnostics, UnknownLinesDiagnostics, VariableReferenceDiagnostics } from './adapters';
 import { KeywordSpellingDiagnostics } from './adapters/keyword-spelling-diagnostics';
 import { StoryLanguageSupport } from '../story.language-support';
 import { StoryModel } from '../../grammar/model';
@@ -11,7 +11,8 @@ const diagnosticsRules: DiagnosticsProviderRule[] = [
 	new ExpressionDiagnostics(),
 	new ScenarioSequenceDiagnostics(),
 	new UnknownLinesDiagnostics(),
-	new KeywordSpellingDiagnostics()
+	new KeywordSpellingDiagnostics(),
+	new VariableReferenceDiagnostics()
 ]; 
 
 export function createDiagnosticsProvider(storyLanguageSupport: StoryLanguageSupport) {

@@ -1,9 +1,9 @@
-import * as _ from 'lodash';
 import { RuleDefinition } from "../../grammar/model/rule-definition";
 import { RulesFile } from '../../grammar/model/rules-file';
 import { RulesLanguageSupport } from '../rules.language-support';
 import { MainRuleType } from '../../../../shared/common.model';
 
+import * as _ from 'lodash';
 
 
 export interface AvailableRulesChangeListener{

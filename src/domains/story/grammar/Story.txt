@@ -1,4 +1,4 @@
-Feature: Pierwsza historia wyprawy na księżyć 
+Feature: First test story
 
 #
 ### Story: You can describe your story here using markdown syntax ###
@@ -6,16 +6,19 @@ Feature: Pierwsza historia wyprawy na księżyć
 
 As a | I want to | So that      
 ------- | ---------------- |  :--------
-user  | select some elements and click on buttons | I will be happy :)     
+user  | click on button on welcome page | To show welcome alert :)     
 
 #
 ### Acceptance tests: ###
 
 
-Scenario: Apollo 11 ma przećwiczyć start rakiety nośnej
-
-  Given <accounts> text should equal "asd"
-
-
-  And youre
+Scenario: I want select some element on welcome page
+  Given Open webpage "/welcome"
+    And Wait for "1" seconds
    
+  When I want click on element <showWelcomeButton>
+
+  Then Browser should display alert with "Hello TestStory DSL!" value
+   
+  
+  

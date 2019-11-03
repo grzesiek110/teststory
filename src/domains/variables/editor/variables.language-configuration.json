@@ -1,9 +1,5 @@
 {
-    "autoClosingPairs": [
-        {
-            "open": "<",
-            "close": ">"
-        },        
+    "autoClosingPairs": [      
         {
             "open": "\"",
             "close": "\"",

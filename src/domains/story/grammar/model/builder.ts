@@ -65,7 +65,7 @@ class Builder implements StoryListener {
     }
 
     enterScenario(ctx: ScenarioContext){
-        const scenario = new StoryScenario(ctx);
+        const scenario = new StoryScenario(this.model, ctx);
         this.model.addScenario(scenario);
 
         this.activeScenario = scenario;
@@ -75,7 +75,7 @@ class Builder implements StoryListener {
     }
 
     enterScenarioOutline(ctx: ScenarioOutlineContext){
-        const scenario = new StoryScenarioOutline(ctx);
+        const scenario = new StoryScenarioOutline(this.model, ctx);
         this.model.addScenarioOutline(scenario);
 
         this.activeScenario = undefined;
