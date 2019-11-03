@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { Event, EventEmitter, ExtensionContext, ProviderResult, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from "vscode";
+import { Event, EventEmitter, ExtensionContext, ProviderResult, TreeDataProvider, TreeItem, TreeItemCollapsibleState, Command } from "vscode";
 import { getAvailableScenariosService } from "../../../../extension";
 import { StoryScenarioDescriptor } from "../services/available-scenarios.service";
 
@@ -24,6 +24,18 @@ export class StoryScenariosItemsProvider implements TreeDataProvider<StoryScenar
             label: element.scenarioName,
             collapsibleState: TreeItemCollapsibleState.None,
             iconPath: element.type === 'SCENARIO' ? this.iconScenario : this.iconScenarioOutline,
+            command: this.createGoToDefintionCommand(element)
+        };
+    }
+
+    private createGoToDefintionCommand(element: StoryScenarioDescriptor): Command {
+        return {
+            title: 'Go to definiton',
+            command: 'vscode.open',
+            arguments: [
+                element.location.uri,
+                { selection: element.location.range }
+            ]
         };
     }
 

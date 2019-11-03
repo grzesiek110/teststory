@@ -1,4 +1,4 @@
-import { TreeDataProvider, Event, TreeItem, ProviderResult, TreeItemCollapsibleState, EventEmitter, ExtensionContext } from "vscode";
+import { TreeDataProvider, Event, TreeItem, ProviderResult, TreeItemCollapsibleState, EventEmitter, ExtensionContext, TextDocumentShowOptions, Range, workspace, Command } from "vscode";
 import * as path from 'path';
 
 import { RuleDefinition } from "../../grammar/model/rule-definition";
@@ -56,8 +56,20 @@ export class ExpressionsItemsProvider implements TreeDataProvider<ExpressionTree
                 tooltip: element.expression.description,
                 collapsibleState: TreeItemCollapsibleState.None,
                 iconPath: this.getIconPath(element),
+                command: this.createGoToDefintionCommand(element)
             };
         }
+    }
+
+    private createGoToDefintionCommand(element: DefinitionTreeItem): Command {
+        return {
+            title: 'Go to definiton',
+            command: 'vscode.open',
+            arguments: [
+                element.expression.location.uri,
+                { selection: element.expression.location.range }
+            ]
+        };
     }
 
     getIconPath(element: DefinitionTreeItem)  {

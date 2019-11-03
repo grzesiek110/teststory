@@ -1,4 +1,4 @@
-import { TreeDataProvider, Event, TreeItem, ProviderResult, TreeItemCollapsibleState, EventEmitter, ExtensionContext } from "vscode";
+import { TreeDataProvider, Event, TreeItem, ProviderResult, TreeItemCollapsibleState, EventEmitter, ExtensionContext, Command } from "vscode";
 import * as path from 'path';
 import { VariableDefinition } from "../../grammar/model/variable-definition";
 import { getAvailableVariablesService } from "../../../../extension";
@@ -24,6 +24,18 @@ export class VariablesItemsProvider implements TreeDataProvider<VariableDefiniti
             tooltip: element.description,
             collapsibleState: TreeItemCollapsibleState.None,
             iconPath: this.iconVariable,
+            command: this.createGoToDefintionCommand(element)
+        };
+    }
+
+    private createGoToDefintionCommand(element: VariableDefinition): Command {
+        return {
+            title: 'Go to definiton',
+            command: 'vscode.open',
+            arguments: [
+                element.location.uri,
+                { selection: element.location.range }
+            ]
         };
     }
 
