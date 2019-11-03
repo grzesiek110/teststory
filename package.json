@@ -3,7 +3,7 @@
 	"displayName": "TestStory",
 	"publisher": "g110",
 	"description": "TestStory is editior for scrum stories with acceptance criteria as e2e tests",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"author": {
 		"name": "Grzegorz Białek",
 		"url": "https://www.linkedin.com/in/gbialek/"
@@ -40,7 +40,7 @@
 				"aliases": [
 					"TestStory story"
 				],
-				"configuration": "./domains/story/editor/story.language-configuration.json"
+				"configuration": "./story.language-configuration.json"
 			},
 			{
 				"id": "rules",
@@ -50,7 +50,7 @@
 				"aliases": [
 					"TestStory rules"
 				],
-				"configuration": "./domains/rules/editor/rules.language-configuration.json"
+				"configuration": "./rules.language-configuration.json"
 			},
 			{
 				"id": "variables",
@@ -60,24 +60,24 @@
 				"aliases": [
 					"TestStory variables"
 				],
-				"configuration": "./domains/variables/editor/variables.language-configuration.json"
+				"configuration": "./variables.language-configuration.json"
 			}
 		],
 		"grammars": [
 			{
 				"language": "story",
 				"scopeName": "source.story",
-				"path": "./src/domains/story/editor/story.tmLanguage.json"
+				"path": "./story.tmLanguage.json"
 			},
 			{
 				"language": "rules",
 				"scopeName": "source.rules",
-				"path": "./src/domains/rules/editor/rules.tmLanguage.json"
+				"path": "./rules.tmLanguage.json"
 			},
 			{
 				"language": "variables",
 				"scopeName": "source.variables",
-				"path": "./src/domains/variables/editor/variables.tmLanguage.json"
+				"path": "./variables.tmLanguage.json"
 			}
 		],
 		"viewsContainers": {
