@@ -1,7 +1,7 @@
 import * as vs from "vscode";
 import { UnknownLineContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
-import { findRangeToReplace } from "./utils";
+import { createRange } from "../../../../../shared/antlr-vsc.utils";
 
 
 
@@ -22,7 +22,7 @@ export class UnknownLineItemsProvider implements CompletionItemsProvider {
         item.filterText = this.ctx.text;
         item.insertText = this.getText();
         item.kind = vs.CompletionItemKind.Keyword;
-        item.range = findRangeToReplace(this.ctx);        
+        item.range = createRange(this.ctx);        
         item.preselect = true;
         
         return item;

@@ -111,8 +111,8 @@ export class StoryModel {
                      .map(key => Number(key));
     }
 
-    getElement(line: number): StoryLineElement | undefined {
-        return this.structure[line];
+    getElement<T extends StoryLineElement>(line: number): T | undefined {
+        return this.structure[line] as T;
     }
 
     getElements<T extends StoryLineElement>(startLine: number, endLine?: number, onlyStoryElements = true, type?: StructureElementType): T[] {
@@ -160,17 +160,6 @@ export class StoryModel {
                type === 'EXAMPLES' || 
                (type === 'RULE' && ((<StoryRule>line).kind === 'GIVEN' || (<StoryRule>line).kind === 'WHEN' || (<StoryRule>line).kind === 'THEN'));    
     }
-
-    // getRuleKindScopeForLine(line: number): MainRuleType | undefined {
-    //     const ruleLines = this.getElements<StoryRule>(0, line, true, 'RULE');
-    //     while(ruleLines.length){
-    //         const ruleLine = ruleLines.pop();
-    //         if (ruleLine.kind === 'GIVEN' || ruleLine.kind === 'WHEN' || ruleLine.kind === 'THEN'){
-    //             return ruleLine.kind;
-    //         }
-    //     }
-    //     return undefined;
-    // }
 
     debugString(){
         let debugTree = 'DebugTree:\r\n';

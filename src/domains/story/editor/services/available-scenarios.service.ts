@@ -5,6 +5,7 @@ import { StoryModel, StoryScenario } from "../../grammar/model";
 import { StoryScenarioOutline } from "../../grammar/model/elements/story-scenario-outline";
 import { StoryLanguageSupport } from "../story.language-support";
 import { StoryParser } from "../../grammar/parser/StoryParser";
+import { createLocation } from "../../../../shared/antlr-vsc.utils";
 
 
 export interface AvailableScenariosChangeListener{
@@ -85,15 +86,9 @@ export class AvailableStoryScenariosService {
         return {
             type: scenario.ctx.ruleIndex === StoryParser.RULE_scenario ? 'SCENARIO' : 'SCENARIO_OUTLINE',
             scenarioName: scenario.ctx.sectionName() && scenario.ctx.sectionName().text || 'unnamed scenario',
-            location: this.createLocation(scenario.model.uri, scenario.ctx),
+            location: createLocation(scenario.model.uri, scenario.ctx),
         };
     }
 
-    private createLocation(uri: Uri, ctx: ParserRuleContext): Location{
-        const line = ctx.start.line - 1;
-        const startIndex = ctx.start.charPositionInLine;
-        const endIndex = startIndex + ctx.text.length;
-
-        return new Location(uri, new Range(new Position(line, startIndex), new Position(line, endIndex)));
-    }    
+    
 }

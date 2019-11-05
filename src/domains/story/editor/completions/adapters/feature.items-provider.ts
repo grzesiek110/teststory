@@ -4,7 +4,7 @@ import { ParserRuleContext } from "antlr4ts";
 import { AndKeywordContext, ExamplesKeywordContext, FeatureKeywordContext, GivenKeywordContext, ScenarioKeywordContext, ScenarioOutlineKeywordContext, ThenKeywordContext, WhenKeywordContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
 import { AbstractArrayTreeVisitor } from "./abstract-array-tree-visitior";
-import { findRangeToReplace } from "./utils";
+import { createRange } from "../../../../../shared/antlr-vsc.utils";
 
 
 
@@ -91,7 +91,7 @@ class WrongKeywordsContextProvider extends AbstractArrayTreeVisitor<vs.Completio
         item.insertText = correctKeyword;
         item.filterText = keywordContext.text;
         item.kind = vs.CompletionItemKind.Keyword;
-        item.range = findRangeToReplace(keywordContext);
+        item.range = createRange(keywordContext);
 
         return item;        
     }

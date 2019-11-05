@@ -14,8 +14,12 @@ export class RulesFile {
         this.definitions.push(definition);
     }
 
-    getDefinitions(type: MainRuleType){
-        return this.definitions.filter(rule => rule.kind === type);
-    }
+    getDefinitions(type?: MainRuleType){
+        if (type){
+            return this.definitions.filter(rule => rule.kind === type);
+        } else {
+            return this.definitions;
+        }
+    }   
 }
 
