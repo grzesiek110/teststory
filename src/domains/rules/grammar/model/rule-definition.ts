@@ -28,8 +28,8 @@ export class RuleDefinition {
 
     static createExpresionMask(expression: string): string {
         return expression
-            .replace(/<.*>/g, '<variable>')
-            .replace(/\".*\"/g, '"value"');
+            .replace(/<[^>]*>/g, '<variable>')
+            .replace(/\"[^\"]*\"/g, '"value"');
     }
 
     static createDescription(description: string, expression: string): string {
@@ -43,8 +43,8 @@ export class RuleDefinition {
         
         let snippedParamNumber = 1;
         const parts = expression
-            .replace(/<.*>/g, '<|>')
-            .replace(/\".*\"/g, '"|"')
+            .replace(/<[^>]*>/g, '<|>')
+            .replace(/\"[^\"]*\"/g, '"|"')
             .split(/\|/g);
         
         let snippet = '';

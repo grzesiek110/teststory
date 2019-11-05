@@ -3,7 +3,7 @@
 	"displayName": "TestStory",
 	"publisher": "g110",
 	"description": "TestStory is editior for scrum stories with acceptance criteria as e2e tests",
-	"version": "0.5.1",
+	"version": "0.6.0",
 	"author": {
 		"name": "Grzegorz Białek",
 		"url": "https://www.linkedin.com/in/gbialek/"
