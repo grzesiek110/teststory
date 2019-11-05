@@ -3,7 +3,7 @@
 	"displayName": "TestStory",
 	"publisher": "g110",
 	"description": "TestStory is editior for scrum stories with acceptance criteria as e2e tests",
-	"version": "0.5.1",
+	"version": "0.6.0",
 	"author": {
 		"name": "Grzegorz Białek",
 		"url": "https://www.linkedin.com/in/gbialek/"
@@ -85,7 +85,7 @@
 				{
 					"id": "teststory-explorer",
 					"title": "TestStory",
-					"icon": "media/teststory.svg"
+					"icon": "media/teststory.png"
 				}
 			]
 		},
@@ -104,7 +104,24 @@
 					"name": "Variables"
 				}
 			]
-		}
+		},
+		"configuration":[
+			{
+				"title": "TestStory",
+				"properties": {					
+					"teststory.errors.checkRuleSequence": {
+						"type": "boolean",
+						"default": "false",
+						"description": "Force sequence of story rules to Given, When, Then. When you disable this option every rule can by in any sequence"
+					},
+					"teststory.errors.checkRuleType": {
+						"type": "boolean",
+						"default": "true",
+						"description": "Check if rule expression is used with correct type of rule. When you enable this option 'when' expressions can be used only with 'when' rules" 
+					}					
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

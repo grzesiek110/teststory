@@ -1,6 +1,7 @@
 import { Location, Position, Range, Uri } from "vscode";
 import { ExpressionContext } from "../parser/RulesParser";
 import { MainRuleType } from "../../../../shared/common.model";
+import { createLocation } from "../../../../shared/antlr-vsc.utils";
 
  
 
@@ -22,13 +23,13 @@ export class RuleDefinition {
         this.description = RuleDefinition.createDescription(description, expression);
         this.snippet = RuleDefinition.createSnippet(expression);
         this.autoExpandVariable = RuleDefinition.firstParamIsVariableRef(this.snippet);
-        this.location = RuleDefinition.createLocation(uri, ctx);
+        this.location = createLocation(uri, ctx);
     }
 
     static createExpresionMask(expression: string): string {
         return expression
-            .replace(/<.*>/g, '<variable>')
-            .replace(/\".*\"/g, '"value"');
+            .replace(/<[^>]*>/g, '<variable>')
+            .replace(/\"[^\"]*\"/g, '"value"');
     }
 
     static createDescription(description: string, expression: string): string {
@@ -42,8 +43,8 @@ export class RuleDefinition {
         
         let snippedParamNumber = 1;
         const parts = expression
-            .replace(/<.*>/g, '<|>')
-            .replace(/\".*\"/g, '"|"')
+            .replace(/<[^>]*>/g, '<|>')
+            .replace(/\"[^\"]*\"/g, '"|"')
             .split(/\|/g);
         
         let snippet = '';
@@ -60,11 +61,5 @@ export class RuleDefinition {
         return snippetText.indexOf('<$1') !== -1;
     }
 
-    static createLocation(uri: Uri, ctx: ExpressionContext): Location{
-        const line = ctx.start.line - 1;
-        const startIndex = ctx.start.charPositionInLine;
-        const endIndex = startIndex + ctx.text.length;
 
-        return new Location(uri, new Range(new Position(line, startIndex), new Position(line, endIndex)));
-    }
 } 

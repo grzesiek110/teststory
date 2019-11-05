@@ -1,5 +1,6 @@
 import { Location, Position, Range, Uri } from "vscode";
 import { VariableLineContext } from "../parser/VariablesParser";
+import { createLocation } from "../../../../shared/antlr-vsc.utils";
 
  
 export class VariableDefinition {
@@ -16,7 +17,7 @@ export class VariableDefinition {
     ){
 
         this.description = VariableDefinition.createDescription(description, variableName, variableType);
-        this.location = VariableDefinition.createLocation(uri, ctx);
+        this.location = createLocation(uri, ctx);
     }
 
     static createDescription(description: string, name: string, type: string): string {
@@ -26,11 +27,5 @@ export class VariableDefinition {
         return `## No description ##\r\n\r\n${name}`+( type ? type : '');
     }
 
-    static createLocation(uri: Uri, ctx: VariableLineContext): Location{
-        const line = ctx.start.line - 1;
-        const startIndex = ctx.start.charPositionInLine;
-        const endIndex = startIndex + ctx.text.length;
-
-        return new Location(uri, new Range(new Position(line, startIndex), new Position(line, endIndex)));
-    }
+ 
 } 

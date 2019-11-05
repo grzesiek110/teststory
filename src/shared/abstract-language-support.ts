@@ -26,6 +26,8 @@ export abstract class AbstractLangageSupport<T extends ModelWithUri> {
 
     abstract parseContent(documentUri: vs.Uri, content: string): T;
 
+    abstract registerProviders(context: vs.ExtensionContext);
+
     async initialize(_context: vs.ExtensionContext){
         await this.createModelsForAllModelFiles();
         this.registerListeners();
@@ -39,8 +41,12 @@ export abstract class AbstractLangageSupport<T extends ModelWithUri> {
         return this.models[uri.path];
     }
 
+    getModels(){
+        return Object.values(this.models);
+    }
+
     protected updateAllModels(){
-        Object.values(this.models).forEach(model => {
+        this.getModels().forEach(model => {
             this.updateModel(model.uri);
         });
     }

@@ -47,8 +47,8 @@ export class StoryScenariosItemsProvider implements TreeDataProvider<StoryScenar
     }
 
     private prepareIcons() {    
-        this.iconScenario = this.context.asAbsolutePath(path.join('resources', 's.svg'));
-        this.iconScenarioOutline = this.context.asAbsolutePath(path.join('resources', 'so.svg'));
+        this.iconScenario = this.context.asAbsolutePath(path.join('resources', 's.png'));
+        this.iconScenarioOutline = this.context.asAbsolutePath(path.join('resources', 'so.png'));
     }
 }
 

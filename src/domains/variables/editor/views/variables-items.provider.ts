@@ -47,7 +47,7 @@ export class VariablesItemsProvider implements TreeDataProvider<VariableDefiniti
     }
 
     private prepareIcons() {    
-        this.iconVariable = this.context.asAbsolutePath(path.join('resources', 'v.svg'));
+        this.iconVariable = this.context.asAbsolutePath(path.join('resources', 'v.png'));
     }
 }
 

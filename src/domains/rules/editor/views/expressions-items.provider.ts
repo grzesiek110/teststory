@@ -109,9 +109,9 @@ export class ExpressionsItemsProvider implements TreeDataProvider<ExpressionTree
     }
 
     private prepareIcons() {    
-        this.iconGiven = this.context.asAbsolutePath(path.join('resources', 'g.svg'));
-        this.iconWhen = this.context.asAbsolutePath(path.join('resources', 'w.svg'));
-        this.iconThen = this.context.asAbsolutePath(path.join('resources', 't.svg'));
+        this.iconGiven = this.context.asAbsolutePath(path.join('resources', 'g.png'));
+        this.iconWhen = this.context.asAbsolutePath(path.join('resources', 'w.png'));
+        this.iconThen = this.context.asAbsolutePath(path.join('resources', 't.png'));
     }
 }
 

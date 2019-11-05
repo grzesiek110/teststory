@@ -11,6 +11,8 @@ Given:
     ### Simply test rule ###
     Rule: Simple rule "value"
 
+    ### Wait for multiple values
+    Rule: Wait for multiple values "one" and "two" 
 
 When:
 

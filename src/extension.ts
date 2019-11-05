@@ -2,15 +2,10 @@ import * as vscode from 'vscode';
 
 import { RulesLanguageSupport } from './domains/rules/editor/rules.language-support';
 import { AvailableRulesService } from './domains/rules/editor/services/available-rules.service';
-import { createCompletionItemProvider } from './domains/story/editor/completions/completions.provider';
-import { createDiagnosticsProvider } from './domains/story/editor/diagnostics/diagnostics.provider';
+import { AvailableStoryScenariosService } from './domains/story/editor/services/available-scenarios.service';
 import { StoryLanguageSupport } from './domains/story/editor/story.language-support';
 import { AvailableVariablesService } from './domains/variables/editor/services/available-variables.service';
-import { ExpressionsView } from './domains/rules/editor/views/expressions.view';
 import { VariablesLanguageSupport } from './domains/variables/editor/variables.language-support';
-import { VariablesView } from './domains/variables/editor/views/variables.view';
-import { AvailableStoryScenariosService } from './domains/story/editor/services/available-scenarios.service';
-import { StoryScenariosView } from './domains/story/editor/views/story-scenarios.view';
 
 
 const storyLanguageSupport = new StoryLanguageSupport();
@@ -72,19 +67,11 @@ export function activate(context: vscode.ExtensionContext) {
 			await storyLanguageSupport.initialize(context);
 			showProgressWithCancel(25, progress, token, reject);
 	
-			createDiagnosticsProvider(storyLanguageSupport);	
-			context.subscriptions.push(createCompletionItemProvider(storyLanguageSupport));
-			showProgressWithCancel(5, progress, token, reject);
+			variablesLanguageSupport.registerProviders(context);	
+			rulesLanguageSupport.registerProviders(context);	
+			storyLanguageSupport.registerProviders(context);	
+			showProgressWithCancel(15, progress, token, reject);
 
-			
-			// tslint:disable-next-line: no-unused-expression
-			new ExpressionsView(context);
-			// tslint:disable-next-line: no-unused-expression
-			new VariablesView(context);
-			// tslint:disable-next-line: no-unused-expression
-			new StoryScenariosView(context);
-
-			showProgressWithCancel(10, progress, token, reject);
 			
 			logToOutput('Test story ready!');
 			resolve();

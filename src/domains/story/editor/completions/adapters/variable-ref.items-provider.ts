@@ -2,8 +2,8 @@ import { CompletionItem, CompletionItemKind, MarkdownString, Position, SnippetSt
 import { getAvailableVariablesService } from "../../../../../extension";
 import { VariableRefContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
-import { findRangeToReplace } from "./utils";
 import { VariableDefinition } from "../../../../variables/grammar/model/variable-definition";
+import { createRange } from "../../../../../shared/antlr-vsc.utils";
 
 
 
@@ -22,7 +22,7 @@ export class VariableRefItemsProvider implements CompletionItemsProvider {
         item.insertText = this.getTextToInsert(variable);
         item.documentation = this.getDescription(variable);
         item.kind = CompletionItemKind.Variable;
-        item.range = findRangeToReplace(this.ctx);
+        item.range = createRange(this.ctx);
 
         return item;        
     }

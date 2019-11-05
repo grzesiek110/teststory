@@ -2,11 +2,11 @@ import * as vs from "vscode";
 
 import { ExpressionContext } from "../../../grammar/parser/StoryParser";
 import { CompletionItemsProvider } from "../completions.model";
-import { findRangeToReplace } from "./utils";
 import { getAvailableRulesService, getStoryLanguageSupport } from "../../../../../extension";
 import { RuleDefinition  } from "../../../../rules/grammar/model/rule-definition";
 import { StoryRule } from "../../../grammar/model";
 import { MainRuleType } from "../../../../../shared/common.model";
+import { createRange } from "../../../../../shared/antlr-vsc.utils";
 
 
 
@@ -33,7 +33,7 @@ export class ExpressionItemsProvider implements CompletionItemsProvider {
         item.documentation = this.getDescription(rule);
         item.insertText = new vs.SnippetString(rule.snippet);
         item.kind = vs.CompletionItemKind.Text;
-        item.range = findRangeToReplace(this.ctx);
+        item.range = createRange(this.ctx);
         if (rule.autoExpandVariable){
             item.command = {
                 title: 'Show available variables',
