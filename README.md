@@ -1,5 +1,5 @@
 # TestStory
-## VSC Editior for scrum stories with acceptance criteria as e2e tests
+## VSC Editor for scrum stories with acceptance tests
 
 &nbsp;
 
@@ -7,31 +7,32 @@
 You can write tests using declarations of rules and variable before developers create real application code. 
 
 
-![write-story](manual/write-story.gif)
+![write-story](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/write-story.gif)
 
 ## Quick fix errors in E2E tests
 Editor supports rich error diagnostics to help write bug free tests
 
-![fix-errors](manual/fix-error.gif)
+![fix-errors](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/fix-error.gif)
 
 ## Navigation
 Fast navigation between stories and declaration of rules and variables
 
-![navigation](manual/navigation.gif)
+![navigation](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/navigation.gif)
 
 ## Perspective
 Own perspective with all stories, rules and variables
 
-![perspective](manual/perspective.gif)
+![perspective](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/perspective.gif)
 
 ## Story as documentation
 Editor support markdown grammar 
 
-![docs](manual/documentation.jpg)
+![docs](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/documentation.jpg)
 
 
-## Build project
-How to build and contribute to this project
+## Source code
+
+GitHub: https://github.com/grzesiek110/teststory
 
 - Run `npm install` in terminal to install dependencies
 - Run `npm run grammar-variables` to generate ANTLR grammar for variables files
