@@ -1,5 +1,9 @@
 # TestStory
-## VSC Editor for scrum stories with acceptance tests
+## VSC Editor for scrum stories with acceptance tests ##
+
+## https://marketplace.visualstudio.com/items?itemName=grzesiek110.teststory
+
+
 
 &nbsp;
 
