@@ -10,6 +10,7 @@
 ## Declarative IntelliSense 
 You can write tests using declarations of rules and variable before developers create real application code. 
 
+![intellisense](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/intellisense.gif)
 
 ![write-story](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/write-story.gif)
 
