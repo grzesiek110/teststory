@@ -1,14 +1,11 @@
-# TestStory
-## VSC Editor for scrum stories with acceptance tests ##
+# TestStory (beta) - VSC editor for scrum stories with tests #
 
-## https://marketplace.visualstudio.com/items?itemName=grzesiek110.teststory
+## Declarative stories ##
+You can write stories before engineers start to develop code 
+![teststory](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/description.png)
 
-
-
-&nbsp;
-
-## Declarative IntelliSense 
-You can write tests using declarations of rules and variable before developers create real application code. 
+## IntelliSense 
+Full Intelisense based on declarations of rules and variables
 
 ![intellisense](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/intellisense.gif)
 

@@ -3,7 +3,7 @@
 	"displayName": "TestStory",
 	"publisher": "grzesiek110",
 	"description": "TestStory is editior for scrum stories with acceptance criteria as e2e tests",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"author": {
 		"name": "Grzegorz Białek",
 		"url": "https://www.linkedin.com/in/gbialek/"
@@ -11,7 +11,6 @@
 	"keywords": [
 		"cucumber",
 		"e2e-tests",
-		"domain-specific-language",
 		"scrum",
 		"tests"
 	],
@@ -25,7 +24,7 @@
 		"Programming Languages"
 	],
 	"preview": true,
-	"icon": "media/teststory.png",
+	"icon": "media/teststory-marketplace.png",
 	"activationEvents": [
 		"*"
 	],
@@ -55,7 +54,7 @@
 			{
 				"id": "variables",
 				"extensions": [
-					".variables"
+					".var"
 				],
 				"aliases": [
 					"TestStory variables"

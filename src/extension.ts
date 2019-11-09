@@ -56,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}, (progress, token) => {
 
 		return new Promise(async (resolve, reject) => {
-			logToOutput('Test story initialization...');
+			logToOutput('TestStory initialization...');
 
 			await variablesLanguageSupport.initialize(context);
 			showProgressWithCancel(25, progress, token, reject);
@@ -73,7 +73,7 @@ export function activate(context: vscode.ExtensionContext) {
 			showProgressWithCancel(15, progress, token, reject);
 
 			
-			logToOutput('Test story ready!');
+			logToOutput('TestStory ready!');
 			resolve();
 		});
 	});	
