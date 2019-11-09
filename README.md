@@ -1,8 +1,15 @@
 # TestStory (beta) - VSC editor for scrum stories with tests #
+Write scrum stories with tests before engineers write first line of application code. Your stories (**\*.story**) are valid cucumber tests built from set of declared rules (**\*.rules**) and variables (**\*.var**). You can create any number of stories, rules and varibles to describe your application. Later e2e enginners will implement those declarations as cucumber steps and pages to use your stories as valid cucumber tests (selenium webdriver)
+
+
+
+You can install beta version of extenstion from [Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=grzesiek110.teststory) 
 
 ## Declarative stories ##
 You can write stories before engineers start to develop code 
 ![teststory](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/description.png)
+
+![files](https://raw.githubusercontent.com/grzesiek110/teststory/master/manual/files.png)
 
 ## IntelliSense 
 Full Intelisense based on declarations of rules and variables
